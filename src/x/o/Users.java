@@ -30,7 +30,6 @@ import javafx.event.EventHandler;
 import javafx.print.PrintColor;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SplitPane;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;

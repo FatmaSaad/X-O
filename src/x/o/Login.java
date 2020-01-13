@@ -16,6 +16,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import javax.swing.JOptionPane;
 
 public class Login extends BorderPane {
 
@@ -132,8 +133,8 @@ public class Login extends BorderPane {
                 phoneError.setText("");
                 
                 // All things is true ==> Send phone number and password to Server.          
-                ps.println(phone + "," + passwordText);
-                System.out.println(phone + "," + passwordText);
+                ps.println("login," + phone + "," + passwordText);
+                System.out.println("login," + phone + "," + passwordText);
                 // Read Server Reply [login is true or not] 
             }
         });
@@ -158,28 +159,16 @@ public class Login extends BorderPane {
 
                                     if(isExist.compareTo("false") == 0) // phone don't exist
                                     {
-                                        //phoneError.setDisable(false);
-                                        //phoneError.setText("You don't exist, Please Register");
+                                        JOptionPane.showMessageDialog(null, "You don't exist, Please Register");
                                         phoneReply = true;
-                                        System.out.println("You don't exist, Please Register");
-                                    }
-                                    else
-                                    {
-                                        phoneError.setDisable(true);
-                                        phoneError.setText("");
+                                        stage.getScene().setRoot(new Register(ps, dis));
+                                        
                                     }
 
-                                    if(isLogin.compareTo("false") == 0) // password is false
+                                    if(isExist.compareTo("true") == 0 && isLogin.compareTo("false") == 0) // Just password only is false
                                     {
-                                        //passError.setDisable(false);
-                                        //passError.setText("Please insert valied password");
+                                        JOptionPane.showMessageDialog(null, "Please insert valied password");
                                         passReply = true;
-                                        System.out.println("Please insert valied password");
-                                    }
-                                    else
-                                    {
-                                        passError.setDisable(true);
-                                        passError.setText("");
                                     }
 
                                     if(isExist.compareTo("true") == 0 && isLogin.compareTo("true") == 0) // Login is true
@@ -191,7 +180,7 @@ public class Login extends BorderPane {
                                         stage.getScene().setRoot(new Users(stage)); //Change it to online board
                                     }
                             } 
-                            catch (IOException ex) 
+                            catch (IOException | SQLException ex) 
                             {
                                 Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
                             } catch (SQLException ex) {
