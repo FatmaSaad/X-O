@@ -9,11 +9,11 @@ package x.o;
  *
  * @author Fatma
  */
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.io.DataInputStream;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ListView;
@@ -22,7 +22,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import static javafx.scene.layout.Region.USE_PREF_SIZE;
 import javafx.stage.Stage;
-import javax.swing.JOptionPane;
 
 public  class Users extends SplitPane {
 
@@ -37,7 +36,7 @@ public  class Users extends SplitPane {
       
     // private final Image[] listOfImages = { GreenLED};
 
-    public Users(Stage stage) throws SQLException {
+    public Users(Stage stage, PrintStream ps, DataInputStream dis){
 
         anchorPane = new AnchorPane();
         listView = new ListView();
@@ -75,39 +74,37 @@ public  class Users extends SplitPane {
         anchorPane0.setDisable(true);
         getItems().add(anchorPane);
         getItems().add(anchorPane0);
-     
 
- 
-       Connection Conn = null;
-       ResultSet rs = null;
-
-       
-            Connection conn = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/xo", "root", "ashraf");
+       ps.println("requestUsers");
+       listView.setItems(items);
+        String arr[];
+        String online;
+        try {
+            String readOnlineUsers = dis.readLine();
             
-            if (conn != null) {
-                System.out.println("Connected to the database!");
-            } else {
-                System.out.println("Failed to make connection!");
+            arr = readOnlineUsers.split(",");
+            online = arr[0];
+
+            if(online.compareTo("onlineUsers") == 0)
+            {
+                System.out.println(arr[1]);
+                //items.add(arr[1]);
             }
-            Statement stmt = conn.createStatement();
-
-       try {
-           rs = stmt.executeQuery("select * from users where state='online'");
-             listView.setItems(items);
-
-           while (rs.next()) {
-               items.add(rs.getString(2));
-               //imageView.setImage(GreenLED);
-              // setGraphic(imageView);
-               System.out.println(rs.getString(2));
-           }
-       } catch (SQLException e) {
-           JOptionPane.showMessageDialog(null,"data not found");
-       }
-
-   }
-
-   
-
-    
+        } catch (IOException ex) {
+            Logger.getLogger(Users.class.getName()).log(Level.SEVERE, null, ex);
+        }                           
+            
+            
+            /*
+            while (rs.next()) {
+            items.add(rs.getString(2));
+            //imageView.setImage(GreenLED);
+            // setGraphic(imageView);
+            System.out.println(rs.getString(2));
+            }
+            } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null,"data not found");
+            }
+        */      
+        }
 }

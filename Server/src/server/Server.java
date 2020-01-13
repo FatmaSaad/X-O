@@ -101,47 +101,62 @@ class UserCheck extends Thread
              boolean passTrue = false; // Check Login
              
             try {
-                loginUser = dis.readLine();
-                String[] arr = loginUser.split(",");
-
-                String state = arr[0];
                 
-                if(state.compareTo("login") == 0) // Data come from login Form
+                loginUser = dis.readLine();
+                if(loginUser != null)
                 {
-                    String loginPhone = arr[1];
-                    String loginPass = arr[2];
-                    String query = "SELECT * FROM users";
-                    ResultSet res = stmt.executeQuery(query);
-                  
-                    while(!res.isLast())
+                    String[] arr = loginUser.split(",");
+                    String state = arr[0];
+                
+                    if(state.compareTo("login") == 0) // Data come from login Form
                     {
-                        if(res.next())
+                        String loginPhone = arr[1];
+                        String loginPass = arr[2];
+                        String query = "SELECT * FROM users";
+                        ResultSet res = stmt.executeQuery(query);
+
+                        while(!res.isLast())
                         {
-                            if(res.getString(5).compareTo(loginPhone) == 0)
+                            if(res.next())
                             {
-                                isExist = true; // yes it is registered
+                                if(res.getString(5).compareTo(loginPhone) == 0)
+                                {
+                                    isExist = true; // yes it is registered
 
-                                if(res.getString(4).compareTo(loginPass) == 0)
-                                   passTrue = true; // Check entered new pass or not
-                            }                               
+                                    if(res.getString(4).compareTo(loginPass) == 0)
+                                       passTrue = true; // Check entered new pass or not
+                                }                               
+                            }
                         }
-                    }
 
-                    if(isExist && passTrue)
-                    {
-                        String updateState = "update users set state = 'online'" + " Where phone =" + loginPhone;
-                        stmt.executeUpdate(updateState);
+                        if(isExist && passTrue)
+                        {
+                            String updateState = "update users set state = 'online'" + " Where phone =" + loginPhone;
+                            stmt.executeUpdate(updateState);
+                        }
+                        ps.println("login," + isExist + "," + passTrue);
+                        System.out.println(loginPhone);
+                        System.out.println(loginPass);
                     }
-                    ps.println(isExist + "," + passTrue);
-                    System.out.println(loginPhone);
-                    System.out.println(loginPass);
-                }
-                else if(state.compareTo("register") == 0) // Data come from Register Form
-                {
-                    String addNewUser = "INSERT INTO users(username, email, password, phone, gender, img_url, total_score, state) VALUES('"+arr[1]+"', '"+arr[2]+"', '"+arr[3]+"', '"+arr[4]+"', '"+arr[5]+"', 'image url', 0, 'online')";
-                    stmt.executeUpdate(addNewUser);
-                    ps.println("registred");
-                    System.out.println("registred");
+                    else if(state.compareTo("register") == 0) // Data come from Register Form
+                    {
+                        String addNewUser = "INSERT INTO users(username, email, password, phone, gender, img_url, total_score, state) VALUES('"+arr[1]+"', '"+arr[2]+"', '"+arr[3]+"', '"+arr[4]+"', '"+arr[5]+"', 'image url', 0, 'online')";
+                        stmt.executeUpdate(addNewUser);
+                        ps.println("registred");
+                        System.out.println("registred");
+                    }
+                    
+                    else if(state.compareTo("requestUsers") == 0)
+                    {
+                        ResultSet onlineUsers = stmt.executeQuery("SELECT * FROM users WHERE state = 'online'");
+                        ps.printf("onlineUsers", onlineUsers);
+                        //ps.println("onlineUsers, " + onlineUsers);
+                        /*while(onlineUsers.next())
+                        {
+                            ps.println("onlineUsers, " + onlineUsers.getString(2) + "," + onlineUsers.getString(1));
+                            System.out.println("onlineUsers, " + onlineUsers.getString(2) + "," + onlineUsers.getString(1));
+                        }*/
+                    }
                 }
         
             } catch (IOException | SQLException ex) {
