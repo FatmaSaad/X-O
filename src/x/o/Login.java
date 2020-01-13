@@ -193,6 +193,8 @@ public class Login extends BorderPane {
                             catch (IOException ex) 
                             {
                                 Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
+                            } catch (SQLException ex) {
+                                Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
                             }
                         }
                     }
