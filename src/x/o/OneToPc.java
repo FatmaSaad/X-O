@@ -826,8 +826,7 @@ boolean flag=true;
           }
         }
                       
-        System.out.printf("ROW: %d COL: %d\n\n", 
-			bm.row, bm.col ); 
+        System.out.printf("ROW: %d COL: %d\n\n", bm.row, bm.col ); 
     }
 }
 
@@ -836,7 +835,7 @@ class GFG
 static class Move 
 { 
 	int row, col; 
-}; 
+};
 
 static char player = 'x', opponent = 'o'; 
 
