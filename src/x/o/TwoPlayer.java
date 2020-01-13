@@ -38,14 +38,18 @@ public  class TwoPlayer extends AnchorPane {
     protected final Line linev2;
     protected final Line linev3;
     protected final Button button0;
+
        protected final MediaView mediaView;
+
     
     int score1;
             int score2;
     /**
      * 
      */
-boolean flag=false;
+
+boolean flag=true;
+
 boolean flagplayer;
 String mm="";
 
@@ -54,6 +58,7 @@ String mm="";
                       {"","",""},
                        {"","",""}
                   };
+
  
   Media media;
    MediaPlayer mediaPlayer;
@@ -81,6 +86,7 @@ String mm="";
         mediaView.setLayoutY(0.0);
         
         
+
         imageView = new ImageView();
         label = new Label();
         label0 = new Label();
@@ -520,6 +526,7 @@ String mm="";
                                   linex1.setVisible(false);
                                  linex2.setVisible(false);
                                  flag=flagplayer;
+
                                          
                     mediaView.setVisible(false);
                     mediaPlayer.setAutoPlay(false);
@@ -527,6 +534,7 @@ String mm="";
                      mediaPlayer2.setAutoPlay(false);
                             mediaPlayer2.stop();
                     
+
             }
         });
                  
@@ -623,32 +631,43 @@ String mm="";
                      {
                          p[i].setDisable(true);
                      }
+
                    if((mm.equals("X")&&flagplayer)||(mm.equals("O")&&!flagplayer))
+
                    {
                     String winner = "Winner is: " + mm+"owner";
                     score1++;
                      win1.setText(String.valueOf(score1));    
+
                        mediaView.setMediaPlayer(mediaPlayer);
            mediaView.setVisible(true);
             mediaPlayer.setAutoPlay(true);  
                    }
                    /*else if(mm.equals("O")&&!flagplayer)
+
+                      JOptionPane.showMessageDialog(null, winner);
+                   }else if(mm.equals("O")&&!flagplayer)
+>>>>>>> 2d6940f07a4675744c564bdbf7136eb567bd6f2c
                    {
                     String winner = "Winner is: " + mm+"owner";
                     score1++;
                        win1.setText(String.valueOf(score1));
                      
                     JOptionPane.showMessageDialog(null, winner);
+<<<<<<< HEAD
                    }*/else
+
                         {
                     
                          score2++;
                             System.out.println(score2);
                          //   win1.setText(String.valueOf(55));
                                 win2.setText(String.valueOf(score2));
+
                                 mediaView.setMediaPlayer(mediaPlayer2);
            mediaView.setVisible(true);
             mediaPlayer2.setAutoPlay(true); 
+
                       // win1.setText(String.valueOf(score1));
                         }
                             mm="";
