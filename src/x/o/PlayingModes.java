@@ -36,7 +36,7 @@ public class PlayingModes extends Pane {
         singleMode.setCursor(Cursor.HAND);
         
         singleMode.setOnAction((ActionEvent event) -> {
-            stage.getScene().setRoot(new OneToPc());
+            stage.getScene().setRoot(new OneToPc("ahmed","PC",0,0));
         });
 
         multiMode.setId("multiMode");
@@ -50,7 +50,7 @@ public class PlayingModes extends Pane {
         multiMode.setCursor(Cursor.HAND);
         
         multiMode.setOnAction((ActionEvent event) -> {
-            stage.getScene().setRoot(new TwoPlayer());
+            stage.getScene().setRoot(new TwoPlayer("ahmed","aly",2,3));
         });
 
         playingOnline.setId("playingOnline");

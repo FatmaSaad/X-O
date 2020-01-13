@@ -32,7 +32,7 @@ public class Server {
         try {
             Driver myDriver = new Driver();
             DriverManager.registerDriver(myDriver);
-            Connection myConnection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/xo", "root", "ashraf");
+            Connection myConnection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/xo", "root", "234234");
             Statement stmt = myConnection.createStatement();
             new Server(stmt);
         } catch (SQLException ex) {
