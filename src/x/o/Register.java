@@ -1,7 +1,8 @@
 package x.o;
 
+import java.io.DataInputStream;
 import java.io.File;
-import java.sql.Statement;
+import java.io.PrintStream;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
@@ -78,7 +79,7 @@ public class Register extends Pane {
         return matcher.find();
      }
      
-    public Register() {
+    public Register(PrintStream ps, DataInputStream dis) {
 
         group = new ToggleGroup();
         tel_label = new Label();
@@ -218,7 +219,7 @@ public class Register extends Pane {
         gender_radio_button.setPrefHeight(29.0);
         gender_radio_button.setPrefWidth(59.0);
         gender_radio_button.setText("Male");
-         gender_radio_button.setToggleGroup(group);
+        gender_radio_button.setToggleGroup(group);
         
 
         gender_radio_button0.setFocusTraversable(true);
@@ -228,7 +229,7 @@ public class Register extends Pane {
         gender_radio_button0.setPrefHeight(29.0);
         gender_radio_button0.setPrefWidth(59.0);
         gender_radio_button0.setText("Female");
-         gender_radio_button0.setToggleGroup(group);
+        gender_radio_button0.setToggleGroup(group);
         
 
         label_required_email.setDisable(true);
@@ -299,36 +300,31 @@ public class Register extends Pane {
             public void handle(ActionEvent event) {
                 
                 File selectedFile= file.showOpenDialog(s);
-      
             }
-         
         });
         
         
-          register_button.addEventHandler(ActionEvent.ACTION,new EventHandler<ActionEvent>(){
+        register_button.addEventHandler(ActionEvent.ACTION,new EventHandler<ActionEvent>(){
             @Override
             public void handle(ActionEvent event) {
                 
                 if(tel_textfield.getText().isEmpty())
                 {
-                          label_required_tel.setDisable(false);
-                         label_required_tel.setText("* you should Enter your phone");
-                         label_required_tel.setTextFill(javafx.scene.paint.Color.RED);
-                       
+                    label_required_tel.setDisable(false);
+                    label_required_tel.setText("* you should Enter your phone");
+                    label_required_tel.setTextFill(javafx.scene.paint.Color.RED);
                 }
                 
                 else if(!(isValidate(tel_textfield.getText())))
-                  {
+                {
                         
-                        label_required_tel.setDisable(false);
-                         label_required_tel.setText("* you should Enter a valid phonenumber");
-                         label_required_tel.setTextFill(javafx.scene.paint.Color.RED);
-                         
-                       
-                      
-                  }else  
+                    label_required_tel.setDisable(false);
+                    label_required_tel.setText("* you should Enter a valid phonenumber");
+                    label_required_tel.setTextFill(javafx.scene.paint.Color.RED);
+                }
+                else  
                 { 
-                    // ba2e yro7 ll login                       
+                    // ba2e yro7 ll login
                     label_required_tel.setText("");
                     label_required_tel.setDisable(true);
 
@@ -338,36 +334,30 @@ public class Register extends Pane {
                 {
                     label_required_fn.setDisable(false);
                     label_required_fn.setText("* You should enter your Fname");
-                     label_required_fn.setTextFill(javafx.scene.paint.Color.RED);
-                         
-                
+                    label_required_fn.setTextFill(javafx.scene.paint.Color.RED);                
                 }
                 else if((firstNameValidate(first_name_textfield.getText())))
                 {
                     label_required_fn.setText(" ");
-                        label_required_fn.setDisable(true);
-                        
+                    label_required_fn.setDisable(true);
                 }
                 else
                 {
-                         label_required_fn.setDisable(false);
+                    label_required_fn.setDisable(false);
                     label_required_fn.setText("* You should enter valid Fname");
-                     label_required_fn.setTextFill(javafx.scene.paint.Color.RED);
-                         
+                    label_required_fn.setTextFill(javafx.scene.paint.Color.RED);
                 }
             
                 if(last_name_textfield.getText().isEmpty())
                 {
                     label_required_ln.setDisable(false);
                     label_required_ln.setText("* You should enter your lname");
-                     label_required_ln.setTextFill(javafx.scene.paint.Color.RED);
-                         
-                
+                    label_required_ln.setTextFill(javafx.scene.paint.Color.RED);
                 }
                 else if((lastNameValidate(last_name_textfield.getText())))
                 {
-                        label_required_ln.setText(" ");
-                        label_required_ln.setDisable(true);
+                    label_required_ln.setText(" ");
+                    label_required_ln.setDisable(true);
                         
                 }
                 else
@@ -378,42 +368,37 @@ public class Register extends Pane {
                          
                 }
                 
-            if(password_textfield.getText().isEmpty())
-            {
-            
-                 label_required_pass.setDisable(false);
-                 label_required_pass.setText("* You should enter your Password");
-                  label_required_pass.setTextFill(javafx.scene.paint.Color.RED);
-            }else if(passwdValidate(password_textfield.getText()))
-            {
-            
-                 label_required_pass.setDisable(true);
-                 label_required_pass.setText(" ");
-            }
-            else 
-            {
-            
-                 label_required_pass.setDisable(false);
-                 label_required_pass.setText("* digits , char, specialChar");
-                 label_required_pass.setTextFill(javafx.scene.paint.Color.RED);
+                if(password_textfield.getText().isEmpty())
+                {
 
-            }
+                    label_required_pass.setDisable(false);
+                    label_required_pass.setText("* You should enter your Password");
+                    label_required_pass.setTextFill(javafx.scene.paint.Color.RED);
+                }
+                else if(passwdValidate(password_textfield.getText()))
+                {
+            
+                    label_required_pass.setDisable(true);
+                    label_required_pass.setText(" ");
+                }
+                else 
+                {
+            
+                    label_required_pass.setDisable(false);
+                    label_required_pass.setText("* digits , char, specialChar");
+                    label_required_pass.setTextFill(javafx.scene.paint.Color.RED);
+                }
 
                 if((password_textfield.getText().equals( confirm_textfield.getText())))
                 {
                     label_required_confirm.setDisable(true);
-                    label_required_confirm.setText(" ");
-                    
+                    label_required_confirm.setText(" ");  
                 }
                 else
                 {
-                    
                     label_required_confirm.setDisable(false);
                     label_required_confirm.setText("* you should match your password");
                     label_required_confirm.setTextFill(javafx.scene.paint.Color.RED);
-
-                
-                
                 }
                 
                 if(email_textfield.getText()==null)
@@ -424,23 +409,31 @@ public class Register extends Pane {
                 }
                 else if(!(emailValidate(email_textfield.getText())))
                 {
-                
                     label_required_email.setDisable(false);
                     label_required_email.setText("Enter validate E-mail 'char@char.com'");
-                    label_required_email.setTextFill(javafx.scene.paint.Color.RED);    
-                
+                    label_required_email.setTextFill(javafx.scene.paint.Color.RED);
                 }
-                else {
+                else
+                {
                 
+                    String gender;
+                    if(group.toString().compareTo("Female") == 0)
+                        gender = "f";
+                    else
+                        gender = "m";
+                        
                     label_required_email.setDisable(true);
-                    label_required_email.setText(" ");
-                    
+                    label_required_email.setText("");
+                    System.out.println(gender);
+                    ps.println("register," + 
+                            first_name_textfield.getText() + "," + 
+                            email_textfield.getText() + "," +
+                            password_textfield.getText() + "," +
+                            tel_textfield.getText()+ "," +
+                            gender);
+                    //System.out.println();
                 }
-              
             }
-
-        });
-      
-        
+        }); 
     }
 }
