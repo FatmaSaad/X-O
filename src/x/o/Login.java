@@ -4,6 +4,7 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.Socket;
+import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.event.ActionEvent;
@@ -187,11 +188,13 @@ public class Login extends BorderPane {
                                         phoneError.setDisable(true);
                                         passError.setText("");
                                         phoneError.setText("");
-                                        stage.getScene().setRoot(new Board()); //Change it to online board
+                                        stage.getScene().setRoot(new Users(stage)); //Change it to online board
                                     }
                             } 
                             catch (IOException ex) 
                             {
+                                Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
+                            } catch (SQLException ex) {
                                 Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
                             }
                         }
