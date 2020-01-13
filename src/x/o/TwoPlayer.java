@@ -1,5 +1,6 @@
 package x.o;
 
+import java.io.File;
 import static java.lang.Thread.sleep;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -10,6 +11,9 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
 import javafx.scene.shape.Line;
 import javax.swing.JOptionPane;
 //[123] [123][123]]
@@ -34,12 +38,49 @@ public  class TwoPlayer extends AnchorPane {
     protected final Line linev2;
     protected final Line linev3;
     protected final Button button0;
+       protected final MediaView mediaView;
+    
+    int score1;
+            int score2;
     /**
      * 
      */
-boolean flag=true;
-    public TwoPlayer() {
+boolean flag=false;
+boolean flagplayer;
+String mm="";
 
+ String  [][]aa={
+                    {"","",""},
+                      {"","",""},
+                       {"","",""}
+                  };
+ 
+  Media media;
+   MediaPlayer mediaPlayer;
+   
+    Media media2;
+   MediaPlayer mediaPlayer2;
+ 
+        
+         
+          
+    public TwoPlayer(String s1,String s2,int sc1,int sc2) {
+
+         media = new Media(new File("C:\\Users\\ahmed\\Desktop\\iti\\java\\apps\\taskone\\video\\src\\video\\v.mp4").toURI().toString());  
+             mediaPlayer = new MediaPlayer(media);
+              media2 = new Media(new File("C:\\Users\\ahmed\\Desktop\\X-O\\src\\x\\o\\v2.mp4").toURI().toString());  
+             mediaPlayer2 = new MediaPlayer(media2);
+             
+        score1=sc1;
+        score2=sc2;
+        
+         mediaView = new MediaView();
+          mediaView.setFitHeight(450.0);
+        mediaView.setFitWidth(750.0);
+        mediaView.setLayoutX(-17.0);
+        mediaView.setLayoutY(0.0);
+        
+        
         imageView = new ImageView();
         label = new Label();
         label0 = new Label();
@@ -119,7 +160,7 @@ boolean flag=true;
         win2.setPrefHeight(36.0);
         win2.setPrefWidth(28.0);
         win2.setStyle("-fx-font-size: 50;");
-        win2.setText("0");
+        win2.setText(String.valueOf(score2));
         win2.setTextFill(javafx.scene.paint.Color.WHITE);
 
         win1.setAlignment(javafx.geometry.Pos.BASELINE_CENTER);
@@ -128,7 +169,7 @@ boolean flag=true;
         win1.setPrefHeight(36.0);
         win1.setPrefWidth(28.0);
         win1.setStyle("-fx-font-size: 50;");
-        win1.setText("0");
+        win1.setText(String.valueOf(score1));
         win1.setTextFill(javafx.scene.paint.Color.WHITE);
 
         p[0].setLayoutX(187.0);
@@ -318,6 +359,7 @@ boolean flag=true;
         getChildren().add(player1name);
         getChildren().add(win2);
         getChildren().add(win1);
+              getChildren().add(mediaView);
         getChildren().add(p[0]);
         getChildren().add(p[3]);
         getChildren().add(p[2]);
@@ -340,9 +382,9 @@ boolean flag=true;
 
         
         //////////////////////////////
-        boolean flagplayer=flag;
+         flagplayer=flag;
        
-           new Thread (){
+        /*   new Thread (){
           public void   run(){
                 while(true)
                 {
@@ -397,18 +439,38 @@ boolean flag=true;
                  }
                         
                  } */
-                         if  (!checkWinner().equals(""))
+             /*            if  (!checkWinner().equals(""))
                  {
                      
                      for(int i=0;i<9;i++)
                      {
                          p[i].setDisable(true);
                      }
-                   
-                    
+                   if(checkWinner().equals("X")&&flagplayer)
+                   {
                     String winner = "Winner is: " + checkWinner();
+                    score1++;
+                     win1.setText(String.valueOf(score1));
                     JOptionPane.showMessageDialog(null, winner);
-                        
+                   
+                   }else
+                        if(checkWinner().equals("O")&&!flagplayer)
+                   {
+                    String winner = "Winner is: " + checkWinner();
+                    score1++;
+                       win1.setText(String.valueOf(score1));
+                     
+                    JOptionPane.showMessageDialog(null, winner);
+                   }else
+                        {
+                    
+                         score1++;
+                            System.out.println(score1);
+                         //   win1.setText(String.valueOf(55));
+                                win1.setText(String.valueOf(5));
+                             //  JOptionPane.showMessageDialog(null, "opponet");
+                      // win1.setText(String.valueOf(score1));
+                        }
                             this.stop();
                         
                         /////
@@ -418,22 +480,57 @@ boolean flag=true;
                     }
                 
             }
-        }.start();
+        }.start();*/
      
-        setplayer("HEIDY", "AHMED");
+             /*
+             Media media = new Media(new File("C:\\Users\\ahmed\\Desktop\\iti\\java\\apps\\taskone\\video\\src\\video\\vv.mp4").toURI().toString());  
+            MediaPlayer mediaPlayer = new MediaPlayer(media);
+            mediaView.setMediaPlayer(mediaPlayer);
+            mediaPlayer.setAutoPlay(true);  
+             */
+        setplayer(s1, s2);
         
         
-             buttonsevents();
+         buttonsevents();
      
            button.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
               
-      
+                           for(int i=0;i<9;i++)
+                     {
+                         p[i].setDisable(false);
+                         p[i].setText("");
+                         
+                     }
+                           for(int k=0;k<3;k++)
+                           {
+                             for(int m=0;m<3;m++)
+                           {
+                              aa[k][m]=""; 
+                           }
+                           
+                           }
+                             line1.setVisible(false);
+                                 line2.setVisible(false);
+                                 line3.setVisible(false);
+                                 linev1.setVisible(false);
+                                  linev2.setVisible(false);
+                                 linev3.setVisible(false);
+                                  linex1.setVisible(false);
+                                 linex2.setVisible(false);
+                                 flag=flagplayer;
+                                         
+                    mediaView.setVisible(false);
+                    mediaPlayer.setAutoPlay(false);
+                    mediaPlayer.stop();
+                     mediaPlayer2.setAutoPlay(false);
+                            mediaPlayer2.stop();
+                    
             }
         });
                  
-                  System.err.println("fff");
+                 
 
        
     }
@@ -444,13 +541,26 @@ boolean flag=true;
         
     }
     
-    public String checkWinner ()
+    public void checkWinner ()
     {
-    String  [][]aa={
+  /*  String  [][]aa={
                     {p[0].getText(),p[1].getText(),p[2].getText()},
                       {p[3].getText(),p[4].getText(),p[5].getText()},
                        {p[6].getText(),p[7].getText(),p[8].getText()}
-                  }; 
+                  }; */
+        
+       aa[0][0]=            p[0].getText();
+       aa[0][1]=            p[1].getText();
+       aa[0][2]=            p[2].getText();
+                                
+       aa[1][0]=            p[3].getText();
+       aa[1][1]=            p[4].getText();
+       aa[1][2]=            p[5].getText();
+                                              
+       aa[2][0]=            p[6].getText();
+       aa[2][1]=            p[7].getText();
+       aa[2][2]=            p[8].getText();
+    
     
     
                     if(aa[0][0].equals(aa[0][1])&&aa[0][2].equals(aa[0][1])&&!aa[0][1].equals(""))
@@ -458,22 +568,24 @@ boolean flag=true;
            
                line1.setVisible(true);
                         System.out.println(aa[0][0]);
-                  return aa[0][0];
+                  mm= aa[0][0];
           
                    //  JOptionPane.showMessageDialog(null, "the winner is ");
                     }
                     if( aa[1][0].equals(aa[1][1])&&aa[1][2].equals(aa[1][1])&&!aa[1][1].equals(""))
                         {
                              line2.setVisible(true);
-                                 return aa[1][0];
+                              score1++;
+                     win1.setText(String.valueOf(score1));
+                                 mm= aa[1][0];
                     }
                         
                         
-                        if( aa[2][0].equals(aa[2][1])&&aa[2][2].equals(aa[2][1])&&!aa[2][1].equals(""))
+                         if( aa[2][0].equals(aa[2][1])&&aa[2][2].equals(aa[2][1])&&!aa[2][1].equals(""))
                             {
                                  line3.setVisible(true);
-                        return aa[2][0];
-                    }
+                                  mm = aa[2][0];
+                            }
                             
                             
                             
@@ -481,32 +593,69 @@ boolean flag=true;
                   if(aa[0][0].equals(aa[1][0])&&aa[2][0].equals(aa[1][0])&&!aa[1][0].equals(""))
                     {
                          linev1.setVisible(true);
-                         return aa[0][0];
+                         mm= aa[0][0];
                     }
                 if( aa[0][1].equals(aa[1][1])&&aa[2][1].equals(aa[1][1])&&!aa[1][1].equals(""))
                     {
                          linev2.setVisible(true);
-                       return aa[0][1];
+                      mm= aa[0][1];
                     }
                         if( aa[0][2].equals(aa[1][2])&&aa[2][2].equals(aa[1][2])&&!aa[1][2].equals(""))
                             {
                                  linev3.setVisible(true);
-                                    return  aa[0][2];
+                                    mm=  aa[0][2];
                     }
                             if( aa[0][0].equals(aa[1][1])&&aa[2][2].equals(aa[1][1])&&!aa[1][1].equals(""))
                             {
                                  linex2.setVisible(true);
-                                    return aa[0][0];
+                                   mm= aa[0][0];
                     }
                       if( aa[0][2].equals(aa[1][1])&&aa[2][0].equals(aa[1][1])&&!aa[1][1].equals(""))
                             {
                                  linex1.setVisible(true);
-                                    return  aa[0][2];
-                    }       
-                            
+                                    mm=  aa[0][2];
+                    }  
+                      
+                        if  (!mm.equals(""))
+                 {
+                     
+                     for(int i=0;i<9;i++)
+                     {
+                         p[i].setDisable(true);
+                     }
+                   if((mm.equals("X")&&flagplayer)||(mm.equals("O")&&!flagplayer))
+                   {
+                    String winner = "Winner is: " + mm+"owner";
+                    score1++;
+                     win1.setText(String.valueOf(score1));    
+                       mediaView.setMediaPlayer(mediaPlayer);
+           mediaView.setVisible(true);
+            mediaPlayer.setAutoPlay(true);  
+                   }
+                   /*else if(mm.equals("O")&&!flagplayer)
+                   {
+                    String winner = "Winner is: " + mm+"owner";
+                    score1++;
+                       win1.setText(String.valueOf(score1));
+                     
+                    JOptionPane.showMessageDialog(null, winner);
+                   }*/else
+                        {
+                    
+                         score2++;
+                            System.out.println(score2);
+                         //   win1.setText(String.valueOf(55));
+                                win2.setText(String.valueOf(score2));
+                                mediaView.setMediaPlayer(mediaPlayer2);
+           mediaView.setVisible(true);
+            mediaPlayer2.setAutoPlay(true); 
+                      // win1.setText(String.valueOf(score1));
+                        }
+                            mm="";
     
         System.out.println(aa[0][0].equals(aa[0][1])&&aa[0][2].equals(aa[0][1]));
-        return "";
+    
+    }
     }
     
     /**
@@ -517,6 +666,8 @@ boolean flag=true;
          p[0].setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+                                           
+
           if(flag==true)
           {
            
@@ -531,11 +682,11 @@ boolean flag=true;
            flag=!flag;
            p[0].setDisable(true);
           }
-             
+             checkWinner();
             }
         });
          p[1].setOnAction(new EventHandler<ActionEvent>() {
-            @Override
+            @ Override
             public void handle(ActionEvent event) {
           if(flag==true)
           {
@@ -549,7 +700,7 @@ boolean flag=true;
            flag=!flag;
            p[1].setDisable(true);
           }
-      
+       checkWinner();
             }
         });
           p[2].setOnAction(new EventHandler<ActionEvent>() {
@@ -568,7 +719,7 @@ boolean flag=true;
            p[2].setDisable(true);
      
           }
-        
+         checkWinner();
             }
         });
            p[3].setOnAction(new EventHandler<ActionEvent>() {
@@ -586,7 +737,7 @@ boolean flag=true;
            flag=!flag;
            p[3].setDisable(true);
           }
-            
+             checkWinner();
             }
         });
             p[4].setOnAction(new EventHandler<ActionEvent>() {
@@ -604,7 +755,7 @@ boolean flag=true;
            flag=!flag;
            p[4].setDisable(true);
           }
-              
+            checkWinner();   
             }
         }); p[5].setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -621,7 +772,7 @@ boolean flag=true;
            flag=!flag;
            p[5].setDisable(true);
           }
-                 
+               checkWinner();   
             }
             
         });
@@ -640,7 +791,7 @@ boolean flag=true;
            flag=!flag;
            p[6].setDisable(true);
           }
-                    
+              checkWinner();       
             }
         });
           p[7].setOnAction(new EventHandler<ActionEvent>() {
@@ -658,7 +809,7 @@ boolean flag=true;
            flag=!flag;
            p[7].setDisable(true);
           }
-              
+               checkWinner();
             }
         });
            p[8].setOnAction(new EventHandler<ActionEvent>() {
@@ -678,7 +829,7 @@ boolean flag=true;
            p[8].setDisable(true);
           }
             
-
+ checkWinner();
             }
         });
            
