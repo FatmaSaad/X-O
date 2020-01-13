@@ -32,7 +32,7 @@ public class Server {
         try {
             Driver myDriver = new Driver();
             DriverManager.registerDriver(myDriver);
-            Connection myConnection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/xo", "root", "ashraf");
+            Connection myConnection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/xo", "root", "root");
             Statement stmt = myConnection.createStatement();
             new Server(stmt);
         } catch (SQLException ex) {
@@ -75,6 +75,7 @@ public class Server {
 
 class UserCheck extends Thread
 {
+    String msg;
     DataInputStream dis;
     PrintStream ps;
     Statement stmt;
@@ -97,6 +98,7 @@ class UserCheck extends Thread
         while(true)
         {
             String loginUser;
+            String msg;
              boolean isExist = false; // Check registeration
              boolean passTrue = false; // Check Login
              
@@ -144,9 +146,14 @@ class UserCheck extends Thread
                     System.out.println("registred");
                 }
         
+           
+               msg =(dis.readLine()).toString();
+               System.out.println(msg);
             } catch (IOException | SQLException ex) {
                 Logger.getLogger(UserCheck.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        
+        
     }
 }
