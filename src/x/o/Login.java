@@ -4,7 +4,6 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.Socket;
-import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.event.ActionEvent;
@@ -145,7 +144,7 @@ public class Login extends BorderPane {
                         while(true)
                         {
                             String serverCheck;
-                            String isExist, isLogin;
+                            String isExist, isLogin,loginMsg;
                             String[] arr;
                             try 
                             {
@@ -154,36 +153,44 @@ public class Login extends BorderPane {
                                 System.out.println(serverCheck);
                                     // Check reply if true or false
                                     arr = serverCheck.split(",");
-                                    isExist = arr[0];
-                                    isLogin = arr[1];
-
-                                    if(isExist.compareTo("false") == 0) // phone don't exist
+                                    
+                                    loginMsg = arr[0];
+                                                                        
+                                    if(loginMsg.compareTo("login") == 0) // Yes, this for Login
                                     {
-                                        JOptionPane.showMessageDialog(null, "You don't exist, Please Register");
-                                        phoneReply = true;
-                                        stage.getScene().setRoot(new Register(ps, dis));
-                                        
+                                        isExist = arr[1];
+                                        isLogin = arr[2];
+
+                                        if(isExist.compareTo("false") == 0) // phone don't exist
+                                        {
+                                            JOptionPane.showMessageDialog(null, "You don't exist, Please Register");
+                                            phoneReply = true;
+                                            stage.getScene().setRoot(new Register(ps, dis));
+
+                                        }
+
+                                        if(isExist.compareTo("true") == 0 && isLogin.compareTo("false") == 0) // Just password only is false
+                                        {
+                                            JOptionPane.showMessageDialog(null, "Please insert valied password");
+                                            passReply = true;
+                                        }
+
+                                        if(isExist.compareTo("true") == 0 && isLogin.compareTo("true") == 0) // Login is true
+                                        {
+                                            passError.setDisable(true);
+                                            phoneError.setDisable(true);
+                                            passError.setText("");
+                                            phoneError.setText("");
+                                            stage.getScene().setRoot(new Users(stage, ps, dis)); //Change it to online board
+                                        }
                                     }
-
-                                    if(isExist.compareTo("true") == 0 && isLogin.compareTo("false") == 0) // Just password only is false
+                                    else if(loginMsg.compareTo("registred") == 0) // Yes, user registered successfuly
                                     {
-                                        JOptionPane.showMessageDialog(null, "Please insert valied password");
-                                        passReply = true;
-                                    }
-
-                                    if(isExist.compareTo("true") == 0 && isLogin.compareTo("true") == 0) // Login is true
-                                    {
-                                        passError.setDisable(true);
-                                        phoneError.setDisable(true);
-                                        passError.setText("");
-                                        phoneError.setText("");
-                                        stage.getScene().setRoot(new Users(stage)); //Change it to online board
+                                        stage.getScene().setRoot(new Users(stage, ps, dis)); //Change it to online board
                                     }
                             } 
-                            catch (IOException | SQLException ex) 
+                            catch (IOException ex) 
                             {
-                                Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
-                            } catch (SQLException ex) {
                                 Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
                             }
                         }

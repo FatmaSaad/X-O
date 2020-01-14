@@ -417,6 +417,7 @@ public class Register extends Pane {
                 {
                 
                     String gender;
+                    System.out.println(group.getSelectedToggle().getUserData());
                     if(group.toString().compareTo("Female") == 0)
                         gender = "f";
                     else
@@ -431,7 +432,6 @@ public class Register extends Pane {
                             password_textfield.getText() + "," +
                             tel_textfield.getText()+ "," +
                             gender);
-                    //System.out.println();
                 }
             }
         }); 
