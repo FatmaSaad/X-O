@@ -1,5 +1,6 @@
 package x.o;
 
+import java.io.File;
 import static java.lang.Thread.sleep;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -10,6 +11,9 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
 import javafx.scene.shape.Line;
 import javax.swing.JOptionPane;
 //[123] [123][123]]
@@ -34,13 +38,18 @@ public  class TwoPlayer extends AnchorPane {
     protected final Line linev2;
     protected final Line linev3;
     protected final Button button0;
+
+       protected final MediaView mediaView;
+
     
     int score1;
             int score2;
     /**
      * 
      */
+
 boolean flag=true;
+
 boolean flagplayer;
 String mm="";
 
@@ -49,12 +58,35 @@ String mm="";
                       {"","",""},
                        {"","",""}
                   };
+
+ 
+  Media media;
+   MediaPlayer mediaPlayer;
+   
+    Media media2;
+   MediaPlayer mediaPlayer2;
+ 
+        
+         
+          
     public TwoPlayer(String s1,String s2,int sc1,int sc2) {
 
-        
+         media = new Media(new File("C:\\Users\\ahmed\\Desktop\\iti\\java\\apps\\taskone\\video\\src\\video\\v.mp4").toURI().toString());  
+             mediaPlayer = new MediaPlayer(media);
+              media2 = new Media(new File("C:\\Users\\ahmed\\Desktop\\X-O\\src\\x\\o\\v2.mp4").toURI().toString());  
+             mediaPlayer2 = new MediaPlayer(media2);
+             
         score1=sc1;
         score2=sc2;
         
+         mediaView = new MediaView();
+          mediaView.setFitHeight(450.0);
+        mediaView.setFitWidth(750.0);
+        mediaView.setLayoutX(-17.0);
+        mediaView.setLayoutY(0.0);
+        
+        
+
         imageView = new ImageView();
         label = new Label();
         label0 = new Label();
@@ -333,6 +365,7 @@ String mm="";
         getChildren().add(player1name);
         getChildren().add(win2);
         getChildren().add(win1);
+              getChildren().add(mediaView);
         getChildren().add(p[0]);
         getChildren().add(p[3]);
         getChildren().add(p[2]);
@@ -493,7 +526,15 @@ String mm="";
                                   linex1.setVisible(false);
                                  linex2.setVisible(false);
                                  flag=flagplayer;
-                           
+
+                                         
+                    mediaView.setVisible(false);
+                    mediaPlayer.setAutoPlay(false);
+                    mediaPlayer.stop();
+                     mediaPlayer2.setAutoPlay(false);
+                            mediaPlayer2.stop();
+                    
+
             }
         });
                  
@@ -590,27 +631,43 @@ String mm="";
                      {
                          p[i].setDisable(true);
                      }
-                   if(mm.equals("X")&&flagplayer)
+
+                   if((mm.equals("X")&&flagplayer)||(mm.equals("O")&&!flagplayer))
+
                    {
                     String winner = "Winner is: " + mm+"owner";
                     score1++;
                      win1.setText(String.valueOf(score1));    
+
+                       mediaView.setMediaPlayer(mediaPlayer);
+           mediaView.setVisible(true);
+            mediaPlayer.setAutoPlay(true);  
+                   }
+                   /*else if(mm.equals("O")&&!flagplayer)
+
                       JOptionPane.showMessageDialog(null, winner);
                    }else if(mm.equals("O")&&!flagplayer)
+>>>>>>> 2d6940f07a4675744c564bdbf7136eb567bd6f2c
                    {
                     String winner = "Winner is: " + mm+"owner";
                     score1++;
                        win1.setText(String.valueOf(score1));
                      
                     JOptionPane.showMessageDialog(null, winner);
-                   }else
+<<<<<<< HEAD
+                   }*/else
+
                         {
                     
                          score2++;
                             System.out.println(score2);
                          //   win1.setText(String.valueOf(55));
                                 win2.setText(String.valueOf(score2));
-                               JOptionPane.showMessageDialog(null, "opponet");
+
+                                mediaView.setMediaPlayer(mediaPlayer2);
+           mediaView.setVisible(true);
+            mediaPlayer2.setAutoPlay(true); 
+
                       // win1.setText(String.valueOf(score1));
                         }
                             mm="";
@@ -648,7 +705,7 @@ String mm="";
             }
         });
          p[1].setOnAction(new EventHandler<ActionEvent>() {
-            @Override
+            @ Override
             public void handle(ActionEvent event) {
           if(flag==true)
           {
