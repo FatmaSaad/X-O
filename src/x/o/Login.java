@@ -4,7 +4,6 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.Socket;
-import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.event.ActionEvent;
@@ -192,8 +191,6 @@ public class Login extends BorderPane {
                             } 
                             catch (IOException ex) 
                             {
-                                Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
-                            } catch (SQLException ex) {
                                 Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
                             }
                         }

@@ -32,7 +32,7 @@ public class Server {
         try {
             Driver myDriver = new Driver();
             DriverManager.registerDriver(myDriver);
-            Connection myConnection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/xo", "root", "root");
+            Connection myConnection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/xo", "root", "ashraf");
             Statement stmt = myConnection.createStatement();
             new Server(stmt);
         } catch (SQLException ex) {
@@ -75,7 +75,6 @@ public class Server {
 
 class UserCheck extends Thread
 {
-    String msg;
     DataInputStream dis;
     PrintStream ps;
     Statement stmt;
@@ -98,7 +97,6 @@ class UserCheck extends Thread
         while(true)
         {
             String loginUser;
-            String msg;
              boolean isExist = false; // Check registeration
              boolean passTrue = false; // Check Login
              
@@ -150,9 +148,15 @@ class UserCheck extends Thread
                     
                     else if(state.compareTo("requestUsers") == 0)
                     {
-                        ResultSet onlineUsers = stmt.executeQuery("SELECT * FROM users WHERE state = 'online'");
-                        ps.printf("onlineUsers", onlineUsers);
-                        //ps.println("onlineUsers, " + onlineUsers);
+                        String users = "onlineUsers";
+                        ResultSet onlineUsers = stmt.executeQuery("SELECT * FROM users");
+                        while(onlineUsers.next())
+                        {
+                            users = users.concat("," + onlineUsers.getString(2) + "." + onlineUsers.getString(1));
+                            System.out.println(users);
+                        }
+                        ps.println(users);
+                        System.out.println(users);
                         /*while(onlineUsers.next())
                         {
                             ps.println("onlineUsers, " + onlineUsers.getString(2) + "," + onlineUsers.getString(1));
@@ -161,14 +165,9 @@ class UserCheck extends Thread
                     }
                 }
         
-           
-               msg =(dis.readLine()).toString();
-               System.out.println(msg);
             } catch (IOException | SQLException ex) {
                 Logger.getLogger(UserCheck.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        
-        
     }
 }
