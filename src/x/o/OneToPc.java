@@ -1,5 +1,6 @@
 package x.o;
 
+import java.io.File;
 import static x.o.GFG.findBestMove;
 import static java.lang.Thread.sleep;
 import java.util.logging.Level;
@@ -11,6 +12,9 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
 import javafx.scene.shape.Line;
 import javax.swing.JOptionPane;
 //[123] [123][123]]
@@ -28,6 +32,7 @@ public  class OneToPc extends AnchorPane {
     protected final Label win2;
     protected final Label win1;
    protected final Button[] p=new Button[9];
+   protected final MediaView mediaView;
     
     protected final Button button;
     protected final Line linex1;
@@ -48,11 +53,36 @@ public  class OneToPc extends AnchorPane {
     
     ////////////////////////////////////////////////
 boolean flag=true;
-    char board[][] = {{ '_', '_', '_' }, 
+boolean flagplayer;
+                              char board[][] = {{ '_', '_', '_' }, 
 					{ '_', '_', '_' }, 
 					{ '_', '_', '_' }}; 
 
-    public OneToPc() {
+                              
+       String mm="";
+
+ String  [][]aa={
+                    {"","",""},
+                      {"","",""},
+                       {"","",""}
+                  };
+ 
+ int score1;
+ int score2;
+  Media media;
+   MediaPlayer mediaPlayer;
+    public OneToPc(String s1,String s2,int sc1,int sc2) {
+        
+        
+          media = new Media(new File("C:\\Users\\ahmed\\Desktop\\iti\\java\\apps\\taskone\\video\\src\\video\\v.mp4").toURI().toString());  
+             mediaPlayer = new MediaPlayer(media);
+          
+        
+        mediaView = new MediaView();
+          mediaView.setFitHeight(450.0);
+        mediaView.setFitWidth(750.0);
+        mediaView.setLayoutX(-17.0);
+        mediaView.setLayoutY(0.0);
 
         imageView = new ImageView();
         label = new Label();
@@ -325,6 +355,9 @@ boolean flag=true;
         button0.setTextFill(javafx.scene.paint.Color.valueOf("#c6ff0c"));
         button0.setVisible(false);
 
+      
+
+        
         getChildren().add(imageView);
         getChildren().add(label);
         getChildren().add(label0);
@@ -332,6 +365,7 @@ boolean flag=true;
         getChildren().add(player1name);
         getChildren().add(win2);
         getChildren().add(win1);
+           getChildren().add(mediaView);
         getChildren().add(p[0]);
         getChildren().add(p[3]);
         getChildren().add(p[2]);
@@ -352,10 +386,15 @@ boolean flag=true;
         getChildren().add(linev3);
         getChildren().add(button0);
 
+          //getChildren().add(mediaView);
         
         //////////////////////////////
+       flagplayer=flag;
+       score1=sc1;
+        score2=sc2;
        
-           new Thread (){
+       /*
+       /*    new Thread (){
           public void   run(){
                 while(true)
                 {
@@ -369,7 +408,7 @@ boolean flag=true;
                         Logger.getLogger(FXMLDocumentBase.class.getName()).log(Level.SEVERE, null, ex);
                     }*/
                  
-                 if  (checkWinner ())
+          /*       if  (checkWinner ())
                  {
                      
                      for(int i=0;i<9;i++)
@@ -382,20 +421,48 @@ boolean flag=true;
                     }
                 
             }
-        }.start();
+        }.start();  */
            
        
      
-        setplayer("HEIDY", "AHMED");
+        setplayer(s1, s2);
         
         
              buttonsevents();
      
-           button.setOnAction(new EventHandler<ActionEvent>() {
+            button.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
               
-      
+                           for(int i=0;i<9;i++)
+                     {
+                         p[i].setDisable(false);
+                         p[i].setText("");
+                         
+                     }
+                           for(int k=0;k<3;k++)
+                           {
+                             for(int m=0;m<3;m++)
+                           {
+                              aa[k][m]=""; 
+                              board[k][m]='_';
+                           }
+                           
+                           }
+                             line1.setVisible(false);
+                                 line2.setVisible(false);
+                                 line3.setVisible(false);
+                                 linev1.setVisible(false);
+                                  linev2.setVisible(false);
+                                 linev3.setVisible(false);
+                                  linex1.setVisible(false);
+                                 linex2.setVisible(false);
+                                 flag=flagplayer;
+                                 flagFire=true;
+                               
+                    mediaView.setVisible(false);
+                    mediaPlayer.setAutoPlay(false);
+                    
             }
         });
                  
@@ -410,7 +477,7 @@ boolean flag=true;
         
     }
     
-    public boolean checkWinner ()
+ /*   public boolean checkWinner ()
     {
     String  [][]aa={
                     {p[0].getText(),p[1].getText(),p[2].getText()},
@@ -468,22 +535,173 @@ boolean flag=true;
                             {
                                  linex1.setVisible(true);
                                     return true;
-                    }       
+                    }  
+    
+    
     
       //
     //  System.err.println(aa[0][0].equals(aa[0][1])&&aa[0][2].equals(aa[0][1]));
         return false;
+    }*/
+    
+    public void checkWinner ()
+    {
+  /*  String  [][]aa={
+                    {p[0].getText(),p[1].getText(),p[2].getText()},
+                      {p[3].getText(),p[4].getText(),p[5].getText()},
+                       {p[6].getText(),p[7].getText(),p[8].getText()}
+                  }; */
+        
+       aa[0][0]=            p[0].getText();
+       aa[0][1]=            p[1].getText();
+       aa[0][2]=            p[2].getText();
+                                
+       aa[1][0]=            p[3].getText();
+       aa[1][1]=            p[4].getText();
+       aa[1][2]=            p[5].getText();
+                                              
+       aa[2][0]=            p[6].getText();
+       aa[2][1]=            p[7].getText();
+       aa[2][2]=            p[8].getText();
+    
+    
+    
+                    if(aa[0][0].equals(aa[0][1])&&aa[0][2].equals(aa[0][1])&&!aa[0][1].equals(""))
+                    {
+           
+               line1.setVisible(true);
+                        System.out.println(aa[0][0]);
+                  mm= aa[0][0];
+          
+                   //  JOptionPane.showMessageDialog(null, "the winner is ");
+                    }
+                    if( aa[1][0].equals(aa[1][1])&&aa[1][2].equals(aa[1][1])&&!aa[1][1].equals(""))
+                        {
+                             line2.setVisible(true);
+                              score1++;
+                     win1.setText(String.valueOf(score1));
+                                 mm= aa[1][0];
+                    }
+                        
+                        
+                         if( aa[2][0].equals(aa[2][1])&&aa[2][2].equals(aa[2][1])&&!aa[2][1].equals(""))
+                            {
+                                 line3.setVisible(true);
+                                  mm = aa[2][0];
+                            }
+                            
+                            
+                            
+                            
+                  if(aa[0][0].equals(aa[1][0])&&aa[2][0].equals(aa[1][0])&&!aa[1][0].equals(""))
+                    {
+                         linev1.setVisible(true);
+                         mm= aa[0][0];
+                    }
+                if( aa[0][1].equals(aa[1][1])&&aa[2][1].equals(aa[1][1])&&!aa[1][1].equals(""))
+                    {
+                         linev2.setVisible(true);
+                      mm= aa[0][1];
+                    }
+                        if( aa[0][2].equals(aa[1][2])&&aa[2][2].equals(aa[1][2])&&!aa[1][2].equals(""))
+                            {
+                                 linev3.setVisible(true);
+                                    mm=  aa[0][2];
+                    }
+                            if( aa[0][0].equals(aa[1][1])&&aa[2][2].equals(aa[1][1])&&!aa[1][1].equals(""))
+                            {
+                                 linex2.setVisible(true);
+                                   mm= aa[0][0];
+                    }
+                      if( aa[0][2].equals(aa[1][1])&&aa[2][0].equals(aa[1][1])&&!aa[1][1].equals(""))
+                            {
+                                 linex1.setVisible(true);
+                                    mm=  aa[0][2];
+                    }  
+                      
+                        if  (!mm.equals(""))
+                 {
+                     
+                     for(int i=0;i<9;i++)
+                     {
+                         p[i].setDisable(true);
+                     }
+                   if(mm.equals("X")&&flagplayer)
+                   {
+                    String winner = "Winner is: " + mm+"owner";
+                    score1++;
+                     win1.setText(String.valueOf(score1));   
+         /////////////////////////////
+           mediaView.setMediaPlayer(mediaPlayer);
+            mediaView.setVisible(true);
+            
+              //      mediaPlayer.setAutoPlay(false);
+            mediaPlayer.setAutoPlay(true);  
+            mediaPlayer.onRepeatProperty();
+                     // JOptionPane.showMessageDialog(null, winner);
+                   }else if(mm.equals("O")&&!flagplayer)
+                   {
+                    String winner = "Winner is: " + mm+"owner";
+                    score1++;
+                       win1.setText(String.valueOf(score1));
+                     
+                   // JOptionPane.showMessageDialog(null, winner);
+                   }else
+                        {
+                    
+                         score2++;
+                            System.out.println(score2);
+                         //   win1.setText(String.valueOf(55));
+                                win2.setText(String.valueOf(score2));
+                               JOptionPane.showMessageDialog(null, "opponet");
+                      // win1.setText(String.valueOf(score1));
+                        }
+                  
+				
+                     if(!isMovesLeft(board))
+                {
+                  
+                      System.out.println("hena fe t3adooooooooooooooooooooooooool");
+                }
+        
+                            mm="";
+    
+        System.out.println(aa[0][0].equals(aa[0][1])&&aa[0][2].equals(aa[0][1]));
+    
+        
+      
+        
     }
+     		
+                     if(!isMovesLeft(board))
+                {
+                  
+                      System.out.println("hena fe t3adooooooooooooooooooooooooool");
+                       JOptionPane.showMessageDialog(null, "t3adool");
+                }                   
+    }
+     Boolean isMovesLeft(char board[][]) 
+{ 
+	for (int i = 0; i < 3; i++) 
+		for (int j = 0; j < 3; j++) 
+			if (board[i][j] == '_') 
+				return true; 
+	return false; 
+}  
     
     /**
       
      
      */
+    
+    boolean flagFire=true;
     public void buttonsevents(){
          p[0].setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-          if(flag==true)
+          
+                flagFire=!flagFire;
+                if(flag==true)
           {
            
                   p[0].setText("X");
@@ -499,8 +717,15 @@ boolean flag=true;
            p[0].setDisable(true);
               board[0][0]='o';
           }
-               fire( board);      
-            }
+          checkWinner ();
+          
+          if(flagFire==false)
+          {
+               fire( board);
+          } 
+          
+          
+          }
         });
          p[1].setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -519,7 +744,15 @@ boolean flag=true;
            p[1].setDisable(true);
            board[0][1]='o';
           }
-        fire( board);     
+          checkWinner ();
+          flagFire=!flagFire;
+      if(flagFire==false)
+          {
+         
+               fire( board);
+               
+          }     
+              
             }
         });
           p[2].setOnAction(new EventHandler<ActionEvent>() {
@@ -541,7 +774,15 @@ boolean flag=true;
            p[2].setDisable(true);
            
           }
-          fire( board);     
+          checkWinner ();
+          flagFire=!flagFire;
+        if(flagFire==false)
+          {
+              
+               fire( board);
+               
+          }
+          
             }
         });
            p[3].setOnAction(new EventHandler<ActionEvent>() {
@@ -562,7 +803,15 @@ boolean flag=true;
             board[1][0]='o';
            p[3].setDisable(true);
           }
-              fire( board);     
+          checkWinner ();
+          flagFire=!flagFire;
+              if(flagFire==false)
+          {
+            
+               fire( board);
+               
+          }  
+           
             }
         });
             p[4].setOnAction(new EventHandler<ActionEvent>() {
@@ -582,7 +831,15 @@ boolean flag=true;
                board[1][1]='o';
            p[4].setDisable(true);
           }
-                fire( board);     
+          checkWinner ();
+          flagFire=!flagFire;
+               if(flagFire==false)
+          {
+            
+               fire( board);
+             
+          }  
+            
             }
         }); p[5].setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -600,7 +857,15 @@ boolean flag=true;
               board[1][2]='o';
            p[5].setDisable(true);
           }
-              fire( board);    
+          checkWinner ();
+          flagFire=!flagFire;
+            if(flagFire==false)
+          {  
+              
+               fire( board);
+             
+          }
+          
             }
                   
         });
@@ -620,7 +885,15 @@ boolean flag=true;
             board[2][0]='o';
            p[6].setDisable(true);
           }
-                fire( board);           
+                    checkWinner ();
+                    flagFire=!flagFire;
+               if(flagFire==false)
+          {
+             
+               fire( board);
+              
+          } 
+                  
             }
         });
           p[7].setOnAction(new EventHandler<ActionEvent>() {
@@ -639,7 +912,15 @@ boolean flag=true;
                    board[2][1]='o';
            p[7].setDisable(true);
           }
-                fire( board);     
+          checkWinner ();
+          flagFire=!flagFire;
+               if(flagFire==false)
+          {
+             
+               fire( board);
+              
+          }
+          
             }
         });
            p[8].setOnAction(new EventHandler<ActionEvent>() {
@@ -659,8 +940,15 @@ boolean flag=true;
                  board[2][2]='o';
            p[8].setDisable(true);
           }
-         fire( board);            
-
+          checkWinner ();
+          flagFire=!flagFire;
+         if(flagFire==false)
+          {
+        
+               fire( board);
+             
+          }   
+          
             }
         });
            
@@ -673,7 +961,7 @@ boolean flag=true;
        GFG.Move bm = findBestMove(board); 
 	if(bm.col==0&&bm.row==0)
         {
-         if(flag==true)
+       /*  if(flag==true)
           {
            
                   p[0].setText("X");
@@ -688,12 +976,13 @@ boolean flag=true;
            flag=!flag;
            p[0].setDisable(true);
               board[0][0]='o';
-          }
+          }*/
+            p[0].fire();
         }
             
         if(bm.col==1&&bm.row==0)
         {
-            if(flag==true)
+         /*   if(flag==true)
           {
            p[1].setText("X");
            flag=!flag;
@@ -706,11 +995,12 @@ boolean flag=true;
            flag=!flag;
            p[1].setDisable(true);
            board[0][1]='o';
-          }
+          }*/
+            p[1].fire();
         }
         if(bm.col==2&&bm.row==0)
         {
-            if(flag==true)
+          /*  if(flag==true)
           {
            p[2].setText("X");
            flag=!flag;
@@ -723,11 +1013,12 @@ boolean flag=true;
            flag=!flag;
            p[2].setDisable(true);
            board[0][2]='o';
-          }
+          }*/
+            p[2].fire();
         }
         if(bm.col==0&&bm.row==1)
         {
-             if(flag==true)
+           /*  if(flag==true)
           {
            p[3].setText("X");
            flag=!flag;
@@ -741,11 +1032,12 @@ boolean flag=true;
            flag=!flag;
             board[1][0]='o';
            p[3].setDisable(true);
-          }
+          }*/
+            p[3].fire();
         }
         if(bm.col==1&&bm.row==1)
         {
-            if(flag==true)
+          /*  if(flag==true)
           {
            p[4].setText("X");
            flag=!flag;
@@ -758,11 +1050,12 @@ boolean flag=true;
            flag=!flag;
                board[1][1]='o';
            p[4].setDisable(true);
-          }
+          }*/
+            p[4].fire();
         }
         if(bm.col==2&&bm.row==1)
         {
-            if(flag==true)
+         /*   if(flag==true)
           {
            p[5].setText("X");
            flag=!flag;
@@ -774,11 +1067,12 @@ boolean flag=true;
            flag=!flag;
               board[1][2]='o';
            p[5].setDisable(true);
-          }
+          }*/
+            p[5].fire();
         }
         if(bm.col==0&&bm.row==2)
         {
-       if(flag==true)
+    /*   if(flag==true)
           {
            p[6].setText("X");
            flag=!flag;
@@ -790,12 +1084,14 @@ boolean flag=true;
            flag=!flag;
             board[2][0]='o';
            p[6].setDisable(true);
-          }
+          }*/
+            p[6].fire();
         }
         if(bm.col==1&&bm.row==2)
         {
-            if(flag==true)
+            /*if(flag==true)
           {
+              
            p[7].setText("X");
            flag=!flag;
                 board[2][1]='x';
@@ -806,10 +1102,12 @@ boolean flag=true;
            flag=!flag;
                    board[2][1]='o';
            p[7].setDisable(true);
-          }
+          }*/
+            
+            p[7].fire();
         }
         if(bm.col==2&&bm.row==2)
-        {
+        {/*
             if(flag==true)
           {
            p[8].setText("X");
@@ -823,7 +1121,8 @@ boolean flag=true;
            flag=!flag;
                  board[2][2]='o';
            p[8].setDisable(true);
-          }
+          }*/
+            p[8].fire();
         }
                       
         System.out.printf("ROW: %d COL: %d\n\n", bm.row, bm.col ); 
