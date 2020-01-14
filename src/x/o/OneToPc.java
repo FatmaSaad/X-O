@@ -52,7 +52,9 @@ public  class OneToPc extends AnchorPane {
     
     
     ////////////////////////////////////////////////
+
 boolean flag=true;
+
 boolean flagplayer;
                               char board[][] = {{ '_', '_', '_' }, 
 					{ '_', '_', '_' }, 
@@ -71,11 +73,21 @@ boolean flagplayer;
  int score2;
   Media media;
    MediaPlayer mediaPlayer;
+
+   
+    Media media2;
+   MediaPlayer mediaPlayer2;
+
+
     public OneToPc(String s1,String s2,int sc1,int sc2) {
         
         
           media = new Media(new File("C:\\Users\\ahmed\\Desktop\\iti\\java\\apps\\taskone\\video\\src\\video\\v.mp4").toURI().toString());  
              mediaPlayer = new MediaPlayer(media);
+
+              media2 = new Media(new File("C:\\Users\\ahmed\\Desktop\\X-O\\src\\x\\o\\v2.mp4").toURI().toString());  
+             mediaPlayer2 = new MediaPlayer(media2);
+
           
         
         mediaView = new MediaView();
@@ -462,6 +474,13 @@ boolean flagplayer;
                                
                     mediaView.setVisible(false);
                     mediaPlayer.setAutoPlay(false);
+
+                    mediaPlayer.stop();
+                     mediaPlayer2.setAutoPlay(false);
+                            mediaPlayer2.stop();
+                    
+
+
                     
             }
         });
@@ -626,13 +645,23 @@ boolean flagplayer;
                      {
                          p[i].setDisable(true);
                      }
-                   if(mm.equals("X")&&flagplayer)
+
+                   if(mm.equals("X")&&flagplayer||(mm.equals("O")&&!flagplayer))
+
                    {
                     String winner = "Winner is: " + mm+"owner";
                     score1++;
                      win1.setText(String.valueOf(score1));   
          /////////////////////////////
            mediaView.setMediaPlayer(mediaPlayer);
+
+           mediaView.setVisible(true);
+            mediaPlayer.setAutoPlay(true);  
+        
+                     // JOptionPane.showMessageDialog(null, winner);
+             
+                       /*if(mm.equals("O")&&!flagplayer)
+=======
             mediaView.setVisible(true);
             
               //      mediaPlayer.setAutoPlay(false);
@@ -640,20 +669,28 @@ boolean flagplayer;
             mediaPlayer.onRepeatProperty();
                      // JOptionPane.showMessageDialog(null, winner);
                    }else if(mm.equals("O")&&!flagplayer)
+>>>>>>> 2d6940f07a4675744c564bdbf7136eb567bd6f2c
                    {
                     String winner = "Winner is: " + mm+"owner";
                     score1++;
                        win1.setText(String.valueOf(score1));
                      
                    // JOptionPane.showMessageDialog(null, winner);
+<<<<<<< HEAD
+                   }else*/
+
                    }else
+
                         {
                     
                          score2++;
                             System.out.println(score2);
                          //   win1.setText(String.valueOf(55));
                                 win2.setText(String.valueOf(score2));
-                               JOptionPane.showMessageDialog(null, "opponet");
+                               mediaView.setMediaPlayer(mediaPlayer2);
+           mediaView.setVisible(true);
+            mediaPlayer2.setAutoPlay(true);  
+
                       // win1.setText(String.valueOf(score1));
                         }
                   
@@ -1125,7 +1162,8 @@ boolean flagplayer;
             p[8].fire();
         }
                       
-        System.out.printf("ROW: %d COL: %d\n\n", bm.row, bm.col ); 
+        System.out.printf("ROW: %d COL: %d\n\n", 
+			bm.row, bm.col ); 
     }
 }
 
@@ -1134,7 +1172,7 @@ class GFG
 static class Move 
 { 
 	int row, col; 
-};
+}; 
 
 static char player = 'x', opponent = 'o'; 
 
