@@ -1,5 +1,6 @@
 package x.o;
 
+import java.awt.event.ActionListener;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -15,6 +16,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 
 public class Login extends BorderPane {
@@ -34,6 +37,8 @@ public class Login extends BorderPane {
     PrintStream ps;
     boolean phoneReply = false;
     boolean passReply = false;
+    final JButton Reject = new JButton("reject");
+         
     
     public Login(Stage stage) {
 
@@ -139,6 +144,8 @@ public class Login extends BorderPane {
         });
         
         new Thread(new Runnable() {
+                public String userPhone;
+
                     @Override
                     public void run() {
                         while(true)
@@ -181,13 +188,56 @@ public class Login extends BorderPane {
                                             phoneError.setDisable(true);
                                             passError.setText("");
                                             phoneError.setText("");
-                                            stage.getScene().setRoot(new Users(stage, ps, dis)); //Change it to online board
+                                            userPhone = arr[3];
+                                             System.out.println("userPhone = "+userPhone);
+
+                                            stage.getScene().setRoot(new Users(stage, ps, dis, userPhone)); //Change it to online board
                                         }
                                     }
                                     else if(loginMsg.compareTo("registred") == 0) // Yes, user registered successfuly
                                     {
-                                        stage.getScene().setRoot(new Users(stage, ps, dis)); //Change it to online board
+                                        userPhone = arr[1];
+                                        stage.getScene().setRoot(new Users(stage, ps, dis, userPhone)); //Change it to online board
                                     }
+                                    
+                                    else if(loginMsg.compareTo("sendReuest") == 0) 
+                                    {
+                                        System.out.println(arr[1]);
+                                        Object[] options = { "Accept", "Reject" };
+                                       //String reject = JOptionPane.showInputDialog("");
+                                        JOptionPane optionPane = new JOptionPane();
+
+                                        
+                                        System.out.println("fffffffffffffffffffffffffffffffff"+userPhone);
+                                        System.out.println("arr[3]  :   "+arr[3]);
+
+                                        if(arr[3].compareTo(userPhone) == 0)
+                                        {
+                                            int input=  optionPane.showOptionDialog(null, arr[1], "Warning",JOptionPane.OK_OPTION, JOptionPane.OK_OPTION, null, options, options[0]);
+                                       
+                                            if(input== JOptionPane.OK_OPTION)
+                                            {
+                                               System.out.println("Accept");
+                                               ps.println("requestreplay,Accept," + arr[2] + ", " +arr[3]);
+                                            }
+                                            else
+                                            {
+                                                System.out.println("rejected");
+                                                ps.println("requestreplay,reject"+ arr[2] + ", " +arr[3]);
+
+                                            }
+                                        }
+                                    }
+                                     else if(loginMsg.compareTo("replay") == 0) 
+                                    {
+                                        if(arr[1].compareTo(userPhone) == 0)
+                                        {
+                                            JOptionPane.showMessageDialog(null, "Your Request Rejected.! >_<");
+                                            System.out.println("rejected");
+                                        }
+                                        
+                                    }
+                                    
                             } 
                             catch (IOException ex) 
                             {
