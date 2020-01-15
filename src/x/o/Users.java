@@ -83,7 +83,7 @@ public  class Users extends SplitPane {
 
         anchorPane.getChildren().add(listView);
 
-        anchorPane0.getChildren().add(new OneToPc("HAzem","PC",0,0));
+        anchorPane0.getChildren().add(new Board());
 
         anchorPane0.setDisable(true);
         getItems().add(anchorPane);
