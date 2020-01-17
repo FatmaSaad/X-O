@@ -1,7 +1,18 @@
 package x.o;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
 import static java.lang.Thread.sleep;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.event.ActionEvent;
@@ -15,6 +26,7 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.scene.shape.Line;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 //[123] [123][123]]
 public  class TwoPlayer extends AnchorPane {
@@ -59,7 +71,7 @@ String mm="";
                        {"","",""}
                   };
 
- 
+ String record=flag+",";
   Media media;
    MediaPlayer mediaPlayer;
    
@@ -71,10 +83,10 @@ String mm="";
           
     public TwoPlayer(String s1,String s2,int sc1,int sc2) {
 
-         media = new Media(new File("C:\\Users\\ahmed\\Desktop\\iti\\java\\apps\\taskone\\video\\src\\video\\v.mp4").toURI().toString());  
-             mediaPlayer = new MediaPlayer(media);
-              media2 = new Media(new File("C:\\Users\\ahmed\\Desktop\\X-O\\src\\x\\o\\v2.mp4").toURI().toString());  
-             mediaPlayer2 = new MediaPlayer(media2);
+        media = new Media(new File("C:\\Users\\ahmed\\Desktop\\iti\\java\\apps\\taskone\\video\\src\\video\\v.mp4").toURI().toString());  
+        mediaPlayer = new MediaPlayer(media);
+        media2 = new Media(new File("C:\\Users\\ahmed\\Desktop\\X-O\\src\\x\\o\\v2.mp4").toURI().toString());  
+        mediaPlayer2 = new MediaPlayer(media2);
              
         score1=sc1;
         score2=sc2;
@@ -533,7 +545,58 @@ String mm="";
                     mediaPlayer.stop();
                      mediaPlayer2.setAutoPlay(false);
                             mediaPlayer2.stop();
-                    
+                    System.out.println(record);
+                 
+                   
+                    Date date =new Date();
+                    String dat =date.getTime()+".txt";
+                    System.out.println(dat);
+                  File file=new File (dat);
+                 
+               
+                
+                try {
+                    file.createNewFile();
+                } catch (IOException ex) {
+                    Logger.getLogger(TwoPlayer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                   
+                try {
+                 FileOutputStream   save = new    FileOutputStream(dat);
+                 DataOutputStream dos =new DataOutputStream (save);
+                 dos.writeUTF(record);
+                 dos.close();
+                try {
+                    String pathes=dat+",";
+    Files.write(Paths.get("record.txt"), pathes.getBytes(), StandardOpenOption.APPEND);
+}catch (IOException e) {
+    //exception handling left as an exercise for the reader
+}
+               
+                 
+                } catch (FileNotFoundException ex) {
+                    Logger.getLogger(TwoPlayer.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IOException ex) {
+                    Logger.getLogger(TwoPlayer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                 try {
+                     FileInputStream   save = new    FileInputStream(dat);
+                 DataInputStream dis =new DataInputStream (save);
+                 String one =dis.readUTF();
+                  String [] tsplit =one.split(",");
+                  for(int i=0;i<tsplit.length;i++)
+                     System.out.println(tsplit[i]);
+                 dis.close();
+                } catch (FileNotFoundException ex) {
+                    Logger.getLogger(TwoPlayer.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IOException ex) {
+                    Logger.getLogger(TwoPlayer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                          
+       
+                        record="";   
+                       
+
 
             }
         });
@@ -686,7 +749,7 @@ String mm="";
             @Override
             public void handle(ActionEvent event) {
                                            
-
+record=record+0+",";
           if(flag==true)
           {
            
@@ -707,6 +770,7 @@ String mm="";
          p[1].setOnAction(new EventHandler<ActionEvent>() {
             @ Override
             public void handle(ActionEvent event) {
+                record=record+1+",";
           if(flag==true)
           {
            p[1].setText("X");
@@ -725,6 +789,7 @@ String mm="";
           p[2].setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+                record=record+2+",";
           if(flag==true)
           {
            p[2].setText("X");
@@ -744,6 +809,7 @@ String mm="";
            p[3].setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+                record=record+3+",";
           if(flag==true)
           {
            p[3].setText("X");
@@ -762,6 +828,7 @@ String mm="";
             p[4].setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+                record=record+4+",";
           if(flag==true)
           {
            p[4].setText("X");
@@ -779,6 +846,7 @@ String mm="";
         }); p[5].setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+                record=record+5+",";
           if(flag==true)
           {
            p[5].setText("X");
@@ -798,6 +866,7 @@ String mm="";
          p[6].setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+                record=record+6+",";
           if(flag==true)
           {
            p[6].setText("X");
@@ -816,6 +885,7 @@ String mm="";
           p[7].setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+                record=record+7+",";
           if(flag==true)
           {
            p[7].setText("X");
@@ -834,6 +904,7 @@ String mm="";
            p[8].setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+                record=record+8+",";
           if(flag==true)
           {
            p[8].setText("X");

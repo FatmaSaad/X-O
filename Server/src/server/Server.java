@@ -1,4 +1,4 @@
-/*
+ /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -16,6 +16,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -34,6 +35,7 @@ public class Server {
             Driver myDriver = new Driver();
             DriverManager.registerDriver(myDriver);
             Connection myConnection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/xo", "root", "root");
+
 
             Statement stmt = myConnection.createStatement();
             new Server(stmt);
@@ -81,11 +83,13 @@ class UserCheck extends Thread
     PrintStream ps;
     Statement stmt;
     String phone;
+    static Vector<UserCheck> players = new Vector<UserCheck>();
     public UserCheck(Socket s, Statement _stmt)
     {
         try {
             dis = new DataInputStream(s.getInputStream());
             ps = new PrintStream(s.getOutputStream());
+            players.add(this);
         } catch (IOException ex) {
             Logger.getLogger(UserCheck.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -127,7 +131,6 @@ class UserCheck extends Thread
                                 if(res.getString(5).compareTo(loginPhone) == 0)
                                 {
                                     isExist = true; // yes it is registered
-                                    System.out.println("user logined is : "+phone);
                                     if(res.getString(4).compareTo(loginPass) == 0)
                                     {
                                         passTrue = true; // Check entered new pass or not
@@ -194,10 +197,9 @@ class UserCheck extends Thread
                         while(loginedName.next())
                         {
                             sendReq = loginedName.getString("username");
-                        }
-                        
-                        System.out.println("recieveReuest,request from  " + sendReq + " to " + userReq + "," + userSendRequest + "," + userRecieveRequest);
-                        ps.println("recieveReuest,request from  " + sendReq + " to " + userReq + "," + userSendRequest + "," + userRecieveRequest);
+                        }                        
+                        String str = "recieveReuest,request from  " + sendReq + " to " + userReq + "," + userSendRequest + "," + userRecieveRequest;
+                        sendRequestToAll(str);
                     }
                     
                     else if(state.compareTo("requestreplay") == 0)
@@ -221,6 +223,14 @@ class UserCheck extends Thread
             } catch (IOException | SQLException ex) {
                 Logger.getLogger(UserCheck.class.getName()).log(Level.SEVERE, null, ex);
             }
+        }
+    }
+    
+    void sendRequestToAll(String request)
+    {
+        for(UserCheck user : players)
+        {
+            user.ps.println(request);
         }
     }
 }

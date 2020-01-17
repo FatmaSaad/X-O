@@ -200,18 +200,13 @@ public class Login extends BorderPane {
                                         stage.getScene().setRoot(new Users(stage, ps, dis, userPhone)); //Change it to online board
                                     }
                                     
-                                    else if(loginMsg.compareTo("sendReuest") == 0) 
+                                    else if(loginMsg.compareTo("recieveReuest") == 0) 
                                     {
-                                        System.out.println(arr[1]);
                                         Object[] options = { "Accept", "Reject" };
                                        //String reject = JOptionPane.showInputDialog("");
                                         JOptionPane optionPane = new JOptionPane();
 
-                                        
-                                        System.out.println("fffffffffffffffffffffffffffffffff"+userPhone);
-                                        System.out.println("arr[3]  :   "+arr[3]);
-
-                                        if(arr[3].compareTo(userPhone) == 0)
+                                        if(userPhone.compareTo(arr[3]) == 0)
                                         {
                                             int input=  optionPane.showOptionDialog(null, arr[1], "Warning",JOptionPane.OK_OPTION, JOptionPane.OK_OPTION, null, options, options[0]);
                                        
@@ -228,7 +223,8 @@ public class Login extends BorderPane {
                                             }
                                         }
                                     }
-                                     else if(loginMsg.compareTo("replay") == 0) 
+                                    
+                                    else if(loginMsg.compareTo("replay") == 0) 
                                     {
                                         if(arr[1].compareTo(userPhone) == 0)
                                         {

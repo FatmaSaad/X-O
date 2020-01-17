@@ -82,14 +82,14 @@ boolean flagplayer;
     public OneToPc(String s1,String s2,int sc1,int sc2) {
         
         
-          media = new Media(new File("C:\\Users\\ahmed\\Desktop\\iti\\java\\apps\\taskone\\video\\src\\video\\v.mp4").toURI().toString());  
+       /*   media = new Media(new File("C:\\Users\\ahmed\\Desktop\\iti\\java\\apps\\taskone\\video\\src\\video\\v.mp4").toURI().toString());  
              mediaPlayer = new MediaPlayer(media);
 
               media2 = new Media(new File("C:\\Users\\ahmed\\Desktop\\X-O\\src\\x\\o\\v2.mp4").toURI().toString());  
              mediaPlayer2 = new MediaPlayer(media2);
 
           
-        
+        */
         mediaView = new MediaView();
           mediaView.setFitHeight(450.0);
         mediaView.setFitWidth(750.0);
