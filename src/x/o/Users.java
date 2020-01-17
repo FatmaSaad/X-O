@@ -12,6 +12,7 @@ package x.o;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.collections.FXCollections;
@@ -33,15 +34,17 @@ public  class Users extends SplitPane {
     private ObservableList<String> items = FXCollections.observableArrayList();
     private ImageView imageView = new ImageView();
     public  int id = 0;
+    public String myPhone;
     //private final Image RedLED = new Image("C:\\Users\\Fatma\\Desktop\\80387600_991797001185054_8482131157683535872_n.jpg");
     //private final Image GreenLED = new Image("/images/LEDGreen.png");
       
     // private final Image[] listOfImages = { GreenLED};
-    public Users(Stage stage, PrintStream ps, DataInputStream dis){
+    public Users(Stage stage, PrintStream ps, DataInputStream dis, String phone){
 
         anchorPane = new AnchorPane();
         listView = new ListView();
         anchorPane0 = new AnchorPane();
+        myPhone = phone;
 
         setDividerPositions(0.29797979797979796);
         setMaxHeight(USE_PREF_SIZE);
@@ -65,16 +68,17 @@ public  class Users extends SplitPane {
         listView.setPrefHeight(398.0);
         listView.setPrefWidth(175.0);
               
-        /*listView.setOnMouseClicked(new EventHandler<MouseEvent>() {
+        listView.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-
-                
-               
-
+               String result = listView.getSelectionModel().getSelectedItem().toString(); 
+                 //String result = items.toString();
+                 System.out.println(result);
+                 ps.println("requestPlay," + myPhone  + ", "+ result);
+                 //String[] arr = result.split(".");
+                 //id = arr[1];
             }
-        });*/
-        
+        });
      
         anchorPane0.setMinHeight(0.0);
         anchorPane0.setMinWidth(0.0);
@@ -83,7 +87,7 @@ public  class Users extends SplitPane {
 
         anchorPane.getChildren().add(listView);
 
-        anchorPane0.getChildren().add(new OneToPc("HAzem","PC",0,0));
+        anchorPane0.getChildren().add(new Board());
 
         anchorPane0.setDisable(true);
         getItems().add(anchorPane);
