@@ -16,8 +16,10 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -79,11 +81,14 @@ class UserCheck extends Thread
     DataInputStream dis;
     PrintStream ps;
     Statement stmt;
+    String phone;
+    static Vector<UserCheck> players = new Vector<UserCheck>();
     public UserCheck(Socket s, Statement _stmt)
     {
         try {
             dis = new DataInputStream(s.getInputStream());
             ps = new PrintStream(s.getOutputStream());
+            players.add(this);
         } catch (IOException ex) {
             Logger.getLogger(UserCheck.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -98,8 +103,10 @@ class UserCheck extends Thread
         while(true)
         {
             String loginUser;
-             boolean isExist = false; // Check registeration
-             boolean passTrue = false; // Check Login
+            boolean isExist = false; // Check registeration
+            boolean passTrue = false; // Check Login
+            String loginPhone="" ;
+
              
             try {
                 
@@ -108,10 +115,10 @@ class UserCheck extends Thread
                 {
                     String[] arr = loginUser.split(",");
                     String state = arr[0];
-                
+                    
                     if(state.compareTo("login") == 0) // Data come from login Form
                     {
-                        String loginPhone = arr[1];
+                        loginPhone = arr[1];
                         String loginPass = arr[2];
                         String query = "SELECT * FROM users";
                         ResultSet res = stmt.executeQuery(query);
@@ -123,9 +130,11 @@ class UserCheck extends Thread
                                 if(res.getString(5).compareTo(loginPhone) == 0)
                                 {
                                     isExist = true; // yes it is registered
-
                                     if(res.getString(4).compareTo(loginPass) == 0)
-                                       passTrue = true; // Check entered new pass or not
+                                    {
+                                        passTrue = true; // Check entered new pass or not
+                                        phone=res.getString(5);
+                                    }
                                 }                               
                             }
                         }
@@ -135,16 +144,19 @@ class UserCheck extends Thread
                             String updateState = "update users set state = 'online'" + " Where phone =" + loginPhone;
                             stmt.executeUpdate(updateState);
                         }
-                        ps.println("login," + isExist + "," + passTrue);
+                        ps.println("login," + isExist + "," + passTrue +"," + phone); // send to logined user
+                        System.out.println(phone);
                         System.out.println(loginPhone);
                         System.out.println(loginPass);
                     }
+                    
                     else if(state.compareTo("register") == 0) // Data come from Register Form
                     {
+                        phone = arr[4];
                         String addNewUser = "INSERT INTO users(username, email, password, phone, gender, img_url, total_score, state) VALUES('"+arr[1]+"', '"+arr[2]+"', '"+arr[3]+"', '"+arr[4]+"', '"+arr[5]+"', 'image url', 0, 'online')";
                         stmt.executeUpdate(addNewUser);
-                        ps.println("registred");
-                        System.out.println("registred");
+                        ps.println("registred," + phone); // send to registered user
+                        System.out.println(phone + "  registred");
                     }
                     
                     else if(state.compareTo("requestUsers") == 0)
@@ -154,21 +166,70 @@ class UserCheck extends Thread
                         while(onlineUsers.next())
                         {
                             users = users.concat("," + onlineUsers.getString(2) + "." + onlineUsers.getString(1));
-                            System.out.println(users);
                         }
                         ps.println(users);
-                        System.out.println(users);
-                        /*while(onlineUsers.next())
-                        {
-                            ps.println("onlineUsers, " + onlineUsers.getString(2) + "," + onlineUsers.getString(1));
-                            System.out.println("onlineUsers, " + onlineUsers.getString(2) + "," + onlineUsers.getString(1));
-                        }*/
                     }
+                    
+                   
+                    else if(state.compareTo("requestPlay") == 0)
+                    {
+                        System.out.println(arr[1]);
+                        String userSendRequest = arr[1];
+                        String userReq = "", sendReq = "", userRecieveRequest = "";
+                        String requesteduser = arr[2];
+                        String[] arrsplit = requesteduser.split("\\.");
+                        int id = Integer.parseInt(arrsplit[1]) ;
+                        
+                        System.out.println(id + "** send:" + userSendRequest + "*** to:" + requesteduser);
+                        
+                        ResultSet resultRequest = stmt.executeQuery("SELECT username,phone FROM users where id = " + id);
+
+                        while(resultRequest.next())
+                        {
+                           
+                            userReq = resultRequest.getString("username");
+                            userRecieveRequest = resultRequest.getString("phone");
+                        }
+                        
+                        ResultSet loginedName = stmt.executeQuery("select username from users where phone = " + userSendRequest);
+
+                        while(loginedName.next())
+                        {
+                            sendReq = loginedName.getString("username");
+                        }                        
+                        String str = "recieveReuest,request from  " + sendReq + " to " + userReq + "," + userSendRequest + "," + userRecieveRequest;
+                        sendRequestToAll(str);
+                    }
+                    
+                    else if(state.compareTo("requestreplay") == 0)
+                    {
+                        
+                        System.out.println(arr[1]);
+                        if (arr[1]=="Accept")
+                        {
+                            // Start Playing
+                        }
+                        
+                        else 
+                            
+                        {
+                            ps.println("replay," + arr[2]);
+                        }
+                    }
+                    
                 }
         
             } catch (IOException | SQLException ex) {
                 Logger.getLogger(UserCheck.class.getName()).log(Level.SEVERE, null, ex);
             }
+        }
+    }
+    
+    void sendRequestToAll(String request)
+    {
+        for(UserCheck user : players)
+        {
+            user.ps.println(request);
         }
     }
 }
