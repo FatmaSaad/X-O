@@ -1,10 +1,22 @@
 package x.o;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
-import static x.o.GFG.findBestMove;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
 import static java.lang.Thread.sleep;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.animation.PauseTransition;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
@@ -16,15 +28,12 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.scene.shape.Line;
-import javafx.stage.Stage;
+import javafx.util.Duration;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
-//[123] [123][123]]
-public  class OneToPc extends AnchorPane {
-    
-    
-    
-    
 
+
+public  class ReplayRecord extends AnchorPane {
     protected final ImageView imageView;
     protected final Label label;
     protected final Label label0;
@@ -33,7 +42,6 @@ public  class OneToPc extends AnchorPane {
     protected final Label win2;
     protected final Label win1;
    protected final Button[] p=new Button[9];
-   protected final MediaView mediaView;
     
     protected final Button button;
     protected final Line linex1;
@@ -45,60 +53,55 @@ public  class OneToPc extends AnchorPane {
     protected final Line linev2;
     protected final Line linev3;
     protected final Button button0;
-    
-    
-    
-    
-    
-    
-    
-    ////////////////////////////////////////////////
 
-boolean flag=false;
+       protected final MediaView mediaView;
 
+    
+    int score1;
+            int score2;
+    /**
+     * 
+     */
+
+boolean flag=true;
+String ddd;
 boolean flagplayer;
-
-boolean flagrecord;
-                              char board[][] = {{ '_', '_', '_' }, 
-					{ '_', '_', '_' }, 
-					{ '_', '_', '_' }}; 
-
-                              
-       String mm="";
+String mm="";
 
  String  [][]aa={
                     {"","",""},
                       {"","",""},
                        {"","",""}
                   };
- 
- int score1;
- int score2;
+
+ String record=flag+",";
   Media media;
    MediaPlayer mediaPlayer;
-
    
     Media media2;
    MediaPlayer mediaPlayer2;
-
-
-    public OneToPc(String s1,String s2,boolean flagplayerR,boolean isrecord, Stage stage) {
+ 
         
-        
-          media = new Media(new File(System.getProperty("user.dir") + "\\src\\x\\o\\media\\v2.mp4").toURI().toString());  
-          System.out.println(System.getProperty("user.dir"));
-             mediaPlayer = new MediaPlayer(media);
-
-              media2 = new Media(new File(System.getProperty("user.dir") + "\\LastVersion\\src\\x\\o\\media\\v2.mp4").toURI().toString());  
-             mediaPlayer2 = new MediaPlayer(media2);
-
+       public      int count=1;
           
+    public ReplayRecord(String s1,String s2,int sc1,int sc2,String _path) {
+
+        media = new Media(new File("C:\\Users\\DELL\\Desktop\\LastVersion\\src\\x\\o\\v2.mp4").toURI().toString());  
+        mediaPlayer = new MediaPlayer(media);
+        media2 = new Media(new File("C:\\Users\\DELL\\Desktop\\LastVersion\\src\\x\\o\\v2.mp4").toURI().toString());  
+        mediaPlayer2 = new MediaPlayer(media2);
+             
+        score1=sc1;
+        ddd = _path;
+        score2=sc2;
         
-        mediaView = new MediaView();
+         mediaView = new MediaView();
           mediaView.setFitHeight(450.0);
         mediaView.setFitWidth(750.0);
         mediaView.setLayoutX(-17.0);
         mediaView.setLayoutY(0.0);
+        
+        
 
         imageView = new ImageView();
         label = new Label();
@@ -179,7 +182,7 @@ boolean flagrecord;
         win2.setPrefHeight(36.0);
         win2.setPrefWidth(28.0);
         win2.setStyle("-fx-font-size: 50;");
-        win2.setText("0");
+        win2.setText(String.valueOf(score2));
         win2.setTextFill(javafx.scene.paint.Color.WHITE);
 
         win1.setAlignment(javafx.geometry.Pos.BASELINE_CENTER);
@@ -188,7 +191,7 @@ boolean flagrecord;
         win1.setPrefHeight(36.0);
         win1.setPrefWidth(28.0);
         win1.setStyle("-fx-font-size: 50;");
-        win1.setText("0");
+        win1.setText(String.valueOf(score1));
         win1.setTextFill(javafx.scene.paint.Color.WHITE);
 
         p[0].setLayoutX(187.0);
@@ -271,12 +274,6 @@ boolean flagrecord;
         button.setStyle("-fx-border-color: white; -fx-background-color: rgba(0,0,0,0); -fx-border-width: 8; -fx-border-radius: 50;");
         button.setText("Back");
         button.setTextFill(javafx.scene.paint.Color.valueOf("#c6ff0c"));
-        
-        button.setOnAction((ActionEvent event) -> {
-
-            stage.getScene().setRoot(new StartGamePage(stage));
-
-        });
 
         linex1.setEndX(356.0);
         linex1.setEndY(-45.0);
@@ -377,9 +374,6 @@ boolean flagrecord;
         button0.setTextFill(javafx.scene.paint.Color.valueOf("#c6ff0c"));
         button0.setVisible(false);
 
-      
-
-        
         getChildren().add(imageView);
         getChildren().add(label);
         getChildren().add(label0);
@@ -387,7 +381,7 @@ boolean flagrecord;
         getChildren().add(player1name);
         getChildren().add(win2);
         getChildren().add(win1);
-           getChildren().add(mediaView);
+              getChildren().add(mediaView);
         getChildren().add(p[0]);
         getChildren().add(p[3]);
         getChildren().add(p[2]);
@@ -408,56 +402,125 @@ boolean flagrecord;
         getChildren().add(linev3);
         getChildren().add(button0);
 
-          //getChildren().add(mediaView);
         
         //////////////////////////////
-      
-       score1=0;
-        score2=0;
-       flagplayer=flag=flagplayerR;
-       flagrecord=isrecord;
+         flagplayer=flag;
        
-       /*
-       /*    new Thread (){
+        /*   new Thread (){
           public void   run(){
                 while(true)
                 {
-                // System.out.println("heeloo worled");
+                 System.out.println("heeloo worled");
                  /*   try {
                           sleep(1200);
                          p[0].setDisable(true);
-                        sleep(1200);
+                        sleep(1200); 
                         p[0].setDisable(false);
                     } catch (InterruptedException ex) {
                         Logger.getLogger(FXMLDocumentBase.class.getName()).log(Level.SEVERE, null, ex);
                     }*/
-                 
-          /*       if  (checkWinner ())
+         
+             /*    if  (checkWinner ().equals("X"))
                  {
                      
                      for(int i=0;i<9;i++)
                      {
                          p[i].setDisable(true);
                      }
-                 
+                   
+                    
+                        ////////////
+                        if(flagplayer)
+                        {
+                            System.out.println(".run()");
+                            JOptionPane.showMessageDialog(null, "myxxx;lkjhgfhtxxxxx");
+                        }else{
+                             JOptionPane.showMessageDialog(null, "oppnetxxxxx");
+                        System.out.println(".run()lkmnkjbjhcvchg");
+                        }
+                            this.stop();
+                        
+                        /////
+                         if  (checkWinner ().equals("O"))
+                 {
+                     
+                     for(int i=0;i<9;i++)
+                     {
+                         p[i].setDisable(true);
+                     }
+                   
                         this.stop();
+                        ////////////
+                        if(flagplayer)
+                        {
+                            JOptionPane.showMessageDialog(null, "onexxxxx");
+                        }else
+                             JOptionPane.showMessageDialog(null, "oppnetxxxxx");
+                         this.stop();
+                        
                  }
+                        
+                 } */
+             /*            if  (!checkWinner().equals(""))
+                 {
+                     
+                     for(int i=0;i<9;i++)
+                     {
+                         p[i].setDisable(true);
+                     }
+                   if(checkWinner().equals("X")&&flagplayer)
+                   {
+                    String winner = "Winner is: " + checkWinner();
+                    score1++;
+                     win1.setText(String.valueOf(score1));
+                    JOptionPane.showMessageDialog(null, winner);
+                   
+                   }else
+                        if(checkWinner().equals("O")&&!flagplayer)
+                   {
+                    String winner = "Winner is: " + checkWinner();
+                    score1++;
+                       win1.setText(String.valueOf(score1));
+                     
+                    JOptionPane.showMessageDialog(null, winner);
+                   }else
+                        {
+                    
+                         score1++;
+                            System.out.println(score1);
+                         //   win1.setText(String.valueOf(55));
+                                win1.setText(String.valueOf(5));
+                             //  JOptionPane.showMessageDialog(null, "opponet");
+                      // win1.setText(String.valueOf(score1));
+                        }
+                            this.stop();
+                        
+                        /////
+                        
+                        
+                 } 
                     }
                 
             }
-        }.start();  */
-           
-       
+        }.start();*/
      
+             /*
+             Media media = new Media(new File("C:\\Users\\ahmed\\Desktop\\iti\\java\\apps\\taskone\\video\\src\\video\\vv.mp4").toURI().toString());  
+            MediaPlayer mediaPlayer = new MediaPlayer(media);
+            mediaView.setMediaPlayer(mediaPlayer);
+            mediaPlayer.setAutoPlay(true);  
+             */
+         
+              
         setplayer(s1, s2);
         
         
-             buttonsevents();
+         buttonsevents();
      
-            button.setOnAction(new EventHandler<ActionEvent>() {
+           button.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-              
+              /*
                            for(int i=0;i<9;i++)
                      {
                          p[i].setDisable(false);
@@ -469,7 +532,6 @@ boolean flagrecord;
                              for(int m=0;m<3;m++)
                            {
                               aa[k][m]=""; 
-                              board[k][m]='_';
                            }
                            
                            }
@@ -482,22 +544,151 @@ boolean flagrecord;
                                   linex1.setVisible(false);
                                  linex2.setVisible(false);
                                  flag=flagplayer;
-                                 flagFire=true;
-                               
+
+                                         
                     mediaView.setVisible(false);
                     mediaPlayer.setAutoPlay(false);
-
                     mediaPlayer.stop();
                      mediaPlayer2.setAutoPlay(false);
                             mediaPlayer2.stop();
-                    
+                    System.out.println(record);
+                 
+                   
+                    Date date =new Date();
+                    String dat =date.getTime()+".txt";
+                    System.out.println(dat);
+                  File file=new File (dat);
+                 
+               
+                
+                try {
+                    file.createNewFile();
+                } catch (IOException ex) {
+                    Logger.getLogger(record.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                   
+                try {
+                 FileOutputStream   save = new    FileOutputStream(dat);
+                 DataOutputStream dos =new DataOutputStream (save);
+                 dos.writeUTF(record);
+                 dos.close();
+                try {
+                    String pathes=dat+",";
+    Files.write(Paths.get("record.txt"), pathes.getBytes(), StandardOpenOption.APPEND);
+}catch (IOException e) {
+    //exception handling left as an exercise for the reader
+}
+               
+                 
+                } catch (FileNotFoundException ex) {
+                    Logger.getLogger(record.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IOException ex) {
+                    Logger.getLogger(record.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                 try {
+                     FileInputStream   save = new    FileInputStream(dat);
+                 DataInputStream dis =new DataInputStream (save);
+                 String one =dis.readUTF();
+                  String [] tsplit =one.split(",");
+                  for(int i=0;i<tsplit.length;i++)
+                     System.out.println(tsplit[i]);
+                 dis.close();
+                } catch (FileNotFoundException ex) {
+                    Logger.getLogger(record.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IOException ex) {
+                    Logger.getLogger(record.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                          
+       
+                        record="";   
+                       
+     System.out.println("one");
+        try {
+            TimeUnit.SECONDS.sleep(5);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(record.class.getName()).log(Level.SEVERE, null, ex);
+        }
+              System.out.println("two");
 
-
-                    
+            } */
+           /*    try {
+                     FileInputStream   save = new    FileInputStream(dat);
+                 DataInputStream dis =new DataInputStream (save);
+                 String one =dis.readUTF();
+                  String [] tsplit =one.split(",");
+                  for(int i=0;i<tsplit.length;i++)
+                     System.out.println(tsplit[i]);
+                 dis.close();
+                } catch (FileNotFoundException ex) {
+                    Logger.getLogger(record.class.getName()).log(Level.SEVERE, null, ex);
+                }*/
+     /*      try {
+                     FileInputStream   save = new    FileInputStream("1579097532799.txt");
+                 DataInputStream dis =new DataInputStream (save);
+                 String one =dis.readUTF();
+                  String [] tsplit =one.split(",");
+                  for(int i=0;i<tsplit.length;i++)
+                     System.out.println(tsplit[i]);
+                 dis.close();
+                } catch (FileNotFoundException ex) {
+                    Logger.getLogger(record.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IOException ex) {
+                    Logger.getLogger(record.class.getName()).log(Level.SEVERE, null, ex);
+           //1579097532799.txt
+                }*/
+  
+         
+   
+     try {
+                     FileInputStream   save = new  FileInputStream(ddd);
+                 DataInputStream dis =new DataInputStream (save);
+                 String one =dis.readUTF();
+                  String [] tsplit =one.split(",");
+                  for(int i=0;i<tsplit.length;i++)
+                     System.out.println(tsplit[i]);
+                 dis.close();
+                 if(tsplit[0].compareTo("true") == 0)
+                 {
+                     flag=true;
+                 }else 
+                     flag=false;
+             //    int i= Integer.parseInt(tsplit[1]);  
+               
+                 
+              // p[3].fire();
+                  
+          //   TimeUnit.SECONDS.sleep(8);
+      
+      PauseTransition pause =new PauseTransition(Duration.seconds(1));
+      pause.setOnFinished((e) -> {
+            for(int ii=count;ii<tsplit.length;)
+          {
+               int i= Integer.parseInt(tsplit[ii]); 
+               p[i].fire();
+               count++;
+               break;
+           
+      }
+            pause.playFromStart();
+      });
+      pause.play();
+              
+        
+                
+                   //   TimeUnit.SECONDS.sleep(8);
+                 
+                 
+                } catch (FileNotFoundException ex) {
+                    Logger.getLogger(ReplayRecord.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IOException ex) {
+                    Logger.getLogger(ReplayRecord.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                 
+               
             }
         });
                  
-                  System.err.println("fff");
+                
 
        
     }
@@ -507,73 +698,6 @@ boolean flagrecord;
         player2name.setText(s2);
         
     }
-    
- /*   public boolean checkWinner ()
-    {
-    String  [][]aa={
-                    {p[0].getText(),p[1].getText(),p[2].getText()},
-                      {p[3].getText(),p[4].getText(),p[5].getText()},
-                       {p[6].getText(),p[7].getText(),p[8].getText()}
-                  }; 
-    
-    
-                    if(aa[0][0].equals(aa[0][1])&&aa[0][2].equals(aa[0][1])&&!aa[0][1].equals(""))
-                    {
-       
-            line1.setVisible(true);
-               return true;
-          
-                   //  JOptionPane.showMessageDialog(null, "the winner is ");
-                    }
-                    if( aa[1][0].equals(aa[1][1])&&aa[1][2].equals(aa[1][1])&&!aa[1][1].equals(""))
-                        {
-                             line2.setVisible(true);
-                                 return true;
-                    }
-                        
-                        
-                        if( aa[2][0].equals(aa[2][1])&&aa[2][2].equals(aa[2][1])&&!aa[2][1].equals(""))
-                            {
-                                 line3.setVisible(true);
-                        return true;
-                    }
-                            
-                            
-                            
-                            
-                  if(aa[0][0].equals(aa[1][0])&&aa[2][0].equals(aa[1][0])&&!aa[1][0].equals(""))
-                    {
-                         linev1.setVisible(true);
-                         return true;
-                    }
-                if( aa[0][1].equals(aa[1][1])&&aa[2][1].equals(aa[1][1])&&!aa[1][1].equals(""))
-                    {
-                         linev2.setVisible(true);
-                       return true;
-                    }
-                       
-                 if( aa[0][2].equals(aa[1][2])&&aa[2][2].equals(aa[1][2])&&!aa[1][2].equals(""))
-                            {
-                                 linev3.setVisible(true);
-                                    return true;
-                    }
-                 if( aa[0][0].equals(aa[1][1])&&aa[2][2].equals(aa[1][1])&&!aa[1][1].equals(""))
-                            {
-                                 linex2.setVisible(true);
-                                    return true;
-                    }
-                      if( aa[0][2].equals(aa[1][1])&&aa[2][0].equals(aa[1][1])&&!aa[1][1].equals(""))
-                            {
-                                 linex1.setVisible(true);
-                                    return true;
-                    }  
-    
-    
-    
-      //
-    //  System.err.println(aa[0][0].equals(aa[0][1])&&aa[0][2].equals(aa[0][1]));
-        return false;
-    }*/
     
     public void checkWinner ()
     {
@@ -658,28 +782,20 @@ boolean flagrecord;
                          p[i].setDisable(true);
                      }
 
-                   if(mm.equals("X")&&flagplayer||(mm.equals("O")&&!flagplayer))
+                   if((mm.equals("X")&&flagplayer)||(mm.equals("O")&&!flagplayer))
 
                    {
                     String winner = "Winner is: " + mm+"owner";
                     score1++;
-                     win1.setText(String.valueOf(score1));   
-         /////////////////////////////
-           mediaView.setMediaPlayer(mediaPlayer);
+                     win1.setText(String.valueOf(score1));    
 
+                       mediaView.setMediaPlayer(mediaPlayer);
            mediaView.setVisible(true);
             mediaPlayer.setAutoPlay(true);  
-        
-                     // JOptionPane.showMessageDialog(null, winner);
-             
-                       /*if(mm.equals("O")&&!flagplayer)
-=======
-            mediaView.setVisible(true);
-            
-              //      mediaPlayer.setAutoPlay(false);
-            mediaPlayer.setAutoPlay(true);  
-            mediaPlayer.onRepeatProperty();
-                     // JOptionPane.showMessageDialog(null, winner);
+                   }
+                   /*else if(mm.equals("O")&&!flagplayer)
+
+                      JOptionPane.showMessageDialog(null, winner);
                    }else if(mm.equals("O")&&!flagplayer)
 >>>>>>> 2d6940f07a4675744c564bdbf7136eb567bd6f2c
                    {
@@ -687,11 +803,9 @@ boolean flagrecord;
                     score1++;
                        win1.setText(String.valueOf(score1));
                      
-                   // JOptionPane.showMessageDialog(null, winner);
+                    JOptionPane.showMessageDialog(null, winner);
 <<<<<<< HEAD
-                   }else*/
-
-                   }else
+                   }*/else
 
                         {
                     
@@ -699,91 +813,55 @@ boolean flagrecord;
                             System.out.println(score2);
                          //   win1.setText(String.valueOf(55));
                                 win2.setText(String.valueOf(score2));
-                               mediaView.setMediaPlayer(mediaPlayer2);
+
+                                mediaView.setMediaPlayer(mediaPlayer2);
            mediaView.setVisible(true);
-            mediaPlayer2.setAutoPlay(true);  
+            mediaPlayer2.setAutoPlay(true); 
 
                       // win1.setText(String.valueOf(score1));
                         }
-                  
-				
-                     if(!isMovesLeft(board))
-                {
-                  
-                      System.out.println("hena fe t3adooooooooooooooooooooooooool");
-                }
-        
                             mm="";
     
         System.out.println(aa[0][0].equals(aa[0][1])&&aa[0][2].equals(aa[0][1]));
     
-        
-      
-        
     }
-     		
-                     if(!isMovesLeft(board))
-                {
-                  
-                      System.out.println("hena fe t3adooooooooooooooooooooooooool");
-                       JOptionPane.showMessageDialog(null, "t3adool");
-                }                   
     }
-     Boolean isMovesLeft(char board[][]) 
-{ 
-	for (int i = 0; i < 3; i++) 
-		for (int j = 0; j < 3; j++) 
-			if (board[i][j] == '_') 
-				return true; 
-	return false; 
-}  
     
     /**
       
      
      */
-    
-    boolean flagFire=true;
     public void buttonsevents(){
          p[0].setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-          
-                flagFire=!flagFire;
-                if(flag==true)
+                                           
+record=record+0+",";
+          if(flag==true)
           {
            
                   p[0].setText("X");
            flag=!flag;
            
            p[0].setDisable(true);
-              board[0][0]='x';
            
           }else
           {
                  p[0].setText("O");
            flag=!flag;
            p[0].setDisable(true);
-              board[0][0]='o';
           }
-          checkWinner ();
-          
-          if(flagFire==false)
-          {
-               fire( board);
-          } 
-          
-          
-          }
+             checkWinner();
+            }
         });
          p[1].setOnAction(new EventHandler<ActionEvent>() {
-            @Override
+            @ Override
             public void handle(ActionEvent event) {
+                record=record+1+",";
           if(flag==true)
           {
            p[1].setText("X");
            flag=!flag;
-           board[0][1]='x';
            
            p[1].setDisable(true);
           }else
@@ -791,608 +869,146 @@ boolean flagrecord;
                  p[1].setText("O");
            flag=!flag;
            p[1].setDisable(true);
-           board[0][1]='o';
           }
-          checkWinner ();
-          flagFire=!flagFire;
-      if(flagFire==false)
-          {
-         
-               fire( board);
-               
-          }     
-              
+       checkWinner();
             }
         });
           p[2].setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+                record=record+2+",";
           if(flag==true)
           {
            p[2].setText("X");
            flag=!flag;
            
            p[2].setDisable(true);
-           board[0][2]='x';
           }else
           {
                  p[2].setText("O");
-           flag=!flag; 
-           board[0][2]='o';
-           
+           flag=!flag;
            p[2].setDisable(true);
-           
+     
           }
-          checkWinner ();
-          flagFire=!flagFire;
-        if(flagFire==false)
-          {
-              
-               fire( board);
-               
-          }
-          
+         checkWinner();
             }
         });
            p[3].setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+                record=record+3+",";
           if(flag==true)
           {
            p[3].setText("X");
            flag=!flag;
-              board[1][0]='x';
-              
+           
            p[3].setDisable(true);
-         
           }else
           {
                  p[3].setText("O");
            flag=!flag;
-            board[1][0]='o';
            p[3].setDisable(true);
           }
-          checkWinner ();
-          flagFire=!flagFire;
-              if(flagFire==false)
-          {
-            
-               fire( board);
-               
-          }  
-           
+             checkWinner();
             }
         });
             p[4].setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+                record=record+4+",";
           if(flag==true)
           {
            p[4].setText("X");
            flag=!flag;
-            board[1][1]='x';
            
            p[4].setDisable(true);
           }else
           {
                  p[4].setText("O");
            flag=!flag;
-               board[1][1]='o';
            p[4].setDisable(true);
           }
-          checkWinner ();
-          flagFire=!flagFire;
-               if(flagFire==false)
-          {
-            
-               fire( board);
-             
-          }  
-            
+            checkWinner();   
             }
         }); p[5].setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+                record=record+5+",";
           if(flag==true)
           {
            p[5].setText("X");
            flag=!flag;
-               board[1][2]='x';
+           
            p[5].setDisable(true);
           }else
           {
                  p[5].setText("O");
            flag=!flag;
-              board[1][2]='o';
            p[5].setDisable(true);
           }
-          checkWinner ();
-          flagFire=!flagFire;
-            if(flagFire==false)
-          {  
-              
-               fire( board);
-             
-          }
-          
+               checkWinner();   
             }
-                  
+            
         });
          p[6].setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+                record=record+6+",";
           if(flag==true)
           {
            p[6].setText("X");
            flag=!flag;
-              board[2][0]='x';
+           
            p[6].setDisable(true);
           }else
           {
                  p[6].setText("O");
            flag=!flag;
-            board[2][0]='o';
            p[6].setDisable(true);
           }
-                    checkWinner ();
-                    flagFire=!flagFire;
-               if(flagFire==false)
-          {
-             
-               fire( board);
-              
-          } 
-                  
+              checkWinner();       
             }
         });
           p[7].setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+                record=record+7+",";
           if(flag==true)
           {
            p[7].setText("X");
            flag=!flag;
-                board[2][1]='x';
+           
            p[7].setDisable(true);
           }else
           {
                  p[7].setText("O");
            flag=!flag;
-                   board[2][1]='o';
            p[7].setDisable(true);
           }
-          checkWinner ();
-          flagFire=!flagFire;
-               if(flagFire==false)
-          {
-             
-               fire( board);
-              
-          }
-          
+               checkWinner();
             }
         });
            p[8].setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+                record=record+8+",";
           if(flag==true)
           {
            p[8].setText("X");
            flag=!flag;
-                 board[2][2]='x';
+           
            p[8].setDisable(true);
           }else
           {
                  p[8].setText("O");
              
            flag=!flag;
-                 board[2][2]='o';
            p[8].setDisable(true);
           }
-          checkWinner ();
-          flagFire=!flagFire;
-         if(flagFire==false)
-          {
-        
-               fire( board);
-             
-          }   
-          
+            
+ checkWinner();
             }
         });
            
     }
-    
-    public void fire(char board1[][])
-    {
-        
-    //    
-       GFG.Move bm = findBestMove(board); 
-	if(bm.col==0&&bm.row==0)
-        {
-       /*  if(flag==true)
-          {
-           
-                  p[0].setText("X");
-           flag=!flag;
-           
-           p[0].setDisable(true);
-              board[0][0]='x';
-           
-          }else
-          {
-                 p[0].setText("O");
-           flag=!flag;
-           p[0].setDisable(true);
-              board[0][0]='o';
-          }*/
-            p[0].fire();
-        }
-            
-        if(bm.col==1&&bm.row==0)
-        {
-         /*   if(flag==true)
-          {
-           p[1].setText("X");
-           flag=!flag;
-           board[0][1]='x';
-           
-           p[1].setDisable(true);
-          }else
-          {
-                 p[1].setText("O");
-           flag=!flag;
-           p[1].setDisable(true);
-           board[0][1]='o';
-          }*/
-            p[1].fire();
-        }
-        if(bm.col==2&&bm.row==0)
-        {
-          /*  if(flag==true)
-          {
-           p[2].setText("X");
-           flag=!flag;
-           board[0][2]='x';
-           
-           p[1].setDisable(true);
-          }else
-          {
-                 p[2].setText("O");
-           flag=!flag;
-           p[2].setDisable(true);
-           board[0][2]='o';
-          }*/
-            p[2].fire();
-        }
-        if(bm.col==0&&bm.row==1)
-        {
-           /*  if(flag==true)
-          {
-           p[3].setText("X");
-           flag=!flag;
-              board[1][0]='x';
-              
-           p[3].setDisable(true);
-         
-          }else
-          {
-                 p[3].setText("O");
-           flag=!flag;
-            board[1][0]='o';
-           p[3].setDisable(true);
-          }*/
-            p[3].fire();
-        }
-        if(bm.col==1&&bm.row==1)
-        {
-          /*  if(flag==true)
-          {
-           p[4].setText("X");
-           flag=!flag;
-            board[1][1]='x';
-           
-           p[4].setDisable(true);
-          }else
-          {
-                 p[4].setText("O");
-           flag=!flag;
-               board[1][1]='o';
-           p[4].setDisable(true);
-          }*/
-            p[4].fire();
-        }
-        if(bm.col==2&&bm.row==1)
-        {
-         /*   if(flag==true)
-          {
-           p[5].setText("X");
-           flag=!flag;
-               board[1][2]='x';
-           p[5].setDisable(true);
-          }else
-          {
-                 p[5].setText("O");
-           flag=!flag;
-              board[1][2]='o';
-           p[5].setDisable(true);
-          }*/
-            p[5].fire();
-        }
-        if(bm.col==0&&bm.row==2)
-        {
-    /*   if(flag==true)
-          {
-           p[6].setText("X");
-           flag=!flag;
-              board[2][0]='x';
-           p[6].setDisable(true);
-          }else
-          {
-                 p[6].setText("O");
-           flag=!flag;
-            board[2][0]='o';
-           p[6].setDisable(true);
-          }*/
-            p[6].fire();
-        }
-        if(bm.col==1&&bm.row==2)
-        {
-            /*if(flag==true)
-          {
-              
-           p[7].setText("X");
-           flag=!flag;
-                board[2][1]='x';
-           p[7].setDisable(true);
-          }else
-          {
-                 p[7].setText("O");
-           flag=!flag;
-                   board[2][1]='o';
-           p[7].setDisable(true);
-          }*/
-            
-            p[7].fire();
-        }
-        if(bm.col==2&&bm.row==2)
-        {/*
-            if(flag==true)
-          {
-           p[8].setText("X");
-           flag=!flag;
-                 board[2][2]='x';
-           p[8].setDisable(true);
-          }else
-          {
-                 p[8].setText("O");
-             
-           flag=!flag;
-                 board[2][2]='o';
-           p[8].setDisable(true);
-          }*/
-            p[8].fire();
-        }
-                      
-        System.out.printf("ROW: %d COL: %d\n\n", 
-			bm.row, bm.col ); 
-    }
 }
-
-class GFG 
-{ 
-static class Move 
-{ 
-	int row, col; 
-}; 
-
-static char player = 'x', opponent = 'o'; 
-
-// This function returns true if there are moves 
-// remaining on the board. It returns false if 
-// there are no moves left to play. 
-static Boolean isMovesLeft(char board[][]) 
-{ 
-	for (int i = 0; i < 3; i++) 
-		for (int j = 0; j < 3; j++) 
-			if (board[i][j] == '_') 
-				return true; 
-	return false; 
-}  
-
-// This is the evaluation function as discussed 
-// in the previous article ( http://goo.gl/sJgv68 ) 
-static int evaluate(char b[][]) 
-{ 
-	// Checking for Rows for X or O victory. 
-	for (int row = 0; row < 3; row++) 
-	{ 
-		if (b[row][0] == b[row][1] && 
-			b[row][1] == b[row][2]) 
-		{ 
-			if (b[row][0] == player) 
-				return +10; 
-			else if (b[row][0] == opponent) 
-				return -10; 
-		} 
-	} 
-
-	// Checking for Columns for X or O victory. 
-	for (int col = 0; col < 3; col++) 
-	{ 
-		if (b[0][col] == b[1][col] && 
-			b[1][col] == b[2][col]) 
-		{ 
-			if (b[0][col] == player) 
-				return +10; 
-
-			else if (b[0][col] == opponent) 
-				return -10; 
-		} 
-	} 
-
-	// Checking for Diagonals for X or O victory. 
-	if (b[0][0] == b[1][1] && b[1][1] == b[2][2]) 
-	{ 
-		if (b[0][0] == player) 
-			return +10; 
-		else if (b[0][0] == opponent) 
-			return -10; 
-	} 
-
-	if (b[0][2] == b[1][1] && b[1][1] == b[2][0]) 
-	{ 
-		if (b[0][2] == player) 
-			return +10; 
-		else if (b[0][2] == opponent) 
-			return -10; 
-	} 
-
-	// Else if none of them have won then return 0 
-	return 0; 
-} 
-
-// This is the minimax function. It considers all 
-// the possible ways the game can go and returns 
-// the value of the board 
-static int minimax(char board[][], 
-					int depth, Boolean isMax) 
-{ 
-	int score = evaluate(board); 
-
-	// If Maximizer has won the game 
-	// return his/her evaluated score 
-	if (score == 10) 
-		return score; 
-
-	// If Minimizer has won the game 
-	// return his/her evaluated score 
-	if (score == -10) 
-		return score; 
-
-	// If there are no more moves and 
-	// no winner then it is a tie 
-	if (isMovesLeft(board) == false) 
-		return 0; 
-
-	// If this maximizer's move 
-	if (isMax) 
-	{ 
-		int best = -1000; 
-
-		// Traverse all cells 
-		for (int i = 0; i < 3; i++) 
-		{ 
-			for (int j = 0; j < 3; j++) 
-			{ 
-				// Check if cell is empty 
-				if (board[i][j]=='_') 
-				{ 
-					// Make the move 
-					board[i][j] = player; 
-
-					// Call minimax recursively and choose 
-					// the maximum value 
-					best = Math.max(best, minimax(board, 
-									depth + 1, !isMax)); 
-
-					// Undo the move 
-					board[i][j] = '_'; 
-				} 
-			} 
-		} 
-		return best; 
-	} 
-
-	// If this minimizer's move 
-	else
-	{ 
-		int best = 1000; 
-
-		// Traverse all cells 
-		for (int i = 0; i < 3; i++) 
-		{ 
-			for (int j = 0; j < 3; j++) 
-			{ 
-				// Check if cell is empty 
-				if (board[i][j] == '_') 
-				{ 
-					// Make the move 
-					board[i][j] = opponent; 
-
-					// Call minimax recursively and choose 
-					// the minimum value 
-					best = Math.min(best, minimax(board, 
-									depth + 1, !isMax)); 
-
-					// Undo the move 
-					board[i][j] = '_'; 
-				} 
-			} 
-		} 
-		return best; 
-	} 
-} 
-
-// This will return the best possible 
-// move for the player 
-static Move findBestMove(char board[][]) 
-{ 
-	int bestVal = -1000; 
-	Move bestMove = new Move(); 
-	bestMove.row = -1; 
-	bestMove.col = -1; 
-
-	// Traverse all cells, evaluate minimax function 
-	// for all empty cells. And return the cell 
-	// with optimal value. 
-	for (int i = 0; i < 3; i++) 
-	{ 
-		for (int j = 0; j < 3; j++) 
-		{ 
-			// Check if cell is empty 
-			if (board[i][j] == '_') 
-			{ 
-				// Make the move 
-				board[i][j] = player; 
-
-				// compute evaluation function for this 
-				// move. 
-				int moveVal = minimax(board, 0, false); 
-
-				// Undo the move 
-				board[i][j] = '_'; 
-
-				// If the value of the current move is 
-				// more than the best value, then update 
-				// best/ 
-				if (moveVal > bestVal) 
-				{ 
-					bestMove.row = i; 
-					bestMove.col = j; 
-					bestVal = moveVal; 
-				} 
-			} 
-		} 
-	} 
-
-	System.out.printf("The value of the best Move " + 
-							"is : %d\n\n", bestVal); 
-
-	return bestMove; 
-}
-}
-
-// Driver code 
-/*public static void main(String[] args) 
-{ 
-	char board[][] = {{ 'x', 'o', 'x' }, 
-					{ 'o', 'x', 'o' }, 
-					{ '_', '_', '_' }}; 
-
-	Move bestMove = findBestMove(board); 
-
-	System.out.printf("The Optimal Move is :\n"); 
-	System.out.printf("ROW: %d COL: %d\n\n", 
-			bestMove.row, bestMove.col ); 
-} */
