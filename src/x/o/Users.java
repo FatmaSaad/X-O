@@ -79,7 +79,10 @@ public  class Users extends SplitPane {
                  //id = arr[1];
             }
         });
-     
+     listView.getStylesheets().add(getClass().getResource("lisStyles.css").toExternalForm());
+     listView.getStyleClass().add("list-view");
+
+
         anchorPane0.setMinHeight(0.0);
         anchorPane0.setMinWidth(0.0);
         anchorPane0.setPrefHeight(160.0);
@@ -87,7 +90,7 @@ public  class Users extends SplitPane {
 
         anchorPane.getChildren().add(listView);
 
-        anchorPane0.getChildren().add(new Board());
+        anchorPane0.getChildren().add(new ListViewBackGround(){});
 
         anchorPane0.setDisable(true);
         getItems().add(anchorPane);
@@ -119,3 +122,4 @@ public  class Users extends SplitPane {
         }
 
 }
+

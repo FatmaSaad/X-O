@@ -10,7 +10,8 @@ public class XO extends Application {
     @Override
     public void start(Stage stage) throws Exception {
 
-        Parent root = new Login(stage);
+        Parent root = new StartGamePage(stage);
+
         Scene scene = new Scene(root);
 
         stage.setScene(scene);

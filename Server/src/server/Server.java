@@ -1,4 +1,4 @@
- /*
+/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -34,8 +34,7 @@ public class Server {
         try {
             Driver myDriver = new Driver();
             DriverManager.registerDriver(myDriver);
-            Connection myConnection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/xo", "root", "root");
-
+            Connection myConnection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/xo", "root", "ashraf");
 
             Statement stmt = myConnection.createStatement();
             new Server(stmt);
@@ -60,7 +59,7 @@ public class Server {
         }
         
         
-       /* try 
+       /*try 
         {
             ps.close();
             dis.close();
@@ -84,6 +83,7 @@ class UserCheck extends Thread
     Statement stmt;
     String phone;
     static Vector<UserCheck> players = new Vector<UserCheck>();
+//    static Vector<String> playingUsers = new Vector<String>();
     public UserCheck(Socket s, Statement _stmt)
     {
         try {
@@ -163,7 +163,7 @@ class UserCheck extends Thread
                     else if(state.compareTo("requestUsers") == 0)
                     {
                         String users = "onlineUsers";
-                        ResultSet onlineUsers = stmt.executeQuery("SELECT * FROM users");
+                        ResultSet onlineUsers = stmt.executeQuery("SELECT * FROM users where phone  !="+phone );
                         while(onlineUsers.next())
                         {
                             users = users.concat("," + onlineUsers.getString(2) + "." + onlineUsers.getString(1));
@@ -197,8 +197,10 @@ class UserCheck extends Thread
                         while(loginedName.next())
                         {
                             sendReq = loginedName.getString("username");
-                        }                        
+                        }
+                        
                         String str = "recieveReuest,request from  " + sendReq + " to " + userReq + "," + userSendRequest + "," + userRecieveRequest;
+
                         sendRequestToAll(str);
                     }
                     
@@ -206,18 +208,38 @@ class UserCheck extends Thread
                     {
                         
                         System.out.println(arr[1]);
-                        if (arr[1]=="Accept")
+                        if (arr[1].compareTo("Accept") == 0)
                         {
-                            // Start Playing
+                            String msg = "openBoardToPlay," + arr[2] + "," +arr[3];
+//                            playingUsers.add(arr[2]);
+//                            playingUsers.add(arr[3]);
+                            sendRequestToAll(msg);
                         }
-                        
-                        else 
-                            
+                        else
                         {
                             ps.println("replay," + arr[2]);
                         }
                     }
                     
+                    //"playing," + myPhone(sender) + "," + phoneOther(reciever) + "," + playChar + ",1"
+                    else if(state.compareTo("playing") == 0)
+                    {
+                        String playMsg = "playingUser," + arr[1] + "," +arr[2] + "," + arr[3] + "," +arr[4];
+                        sendRequestToAll(playMsg);
+                    }
+                    
+                    //"winner," + myPhone + "," + oppositePhone 
+                    else if(state.compareTo("winner") == 0)
+                    {
+                        sendRequestToAll("playVideos," + arr[1] + "," + arr[2]);
+                    }
+                    
+                    //"replayGame," + myPhone + "," + phoneOther
+                    else if(state.compareTo("replayGame") == 0)
+                    {
+                        sendRequestToAll("gameReply," + arr[1] + "," + arr[2]);
+                    }
+                        
                 }
         
             } catch (IOException | SQLException ex) {
