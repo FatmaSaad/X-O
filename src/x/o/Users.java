@@ -9,21 +9,22 @@ package x.o;
  *
  * @author Fatma
  */
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.io.DataInputStream;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.net.Socket;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SplitPane;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import static javafx.scene.layout.Region.USE_PREF_SIZE;
 import javafx.stage.Stage;
-import javax.swing.JOptionPane;
 
 public  class Users extends SplitPane {
 
@@ -32,17 +33,18 @@ public  class Users extends SplitPane {
     protected final AnchorPane anchorPane0;
     private ObservableList<String> items = FXCollections.observableArrayList();
     private ImageView imageView = new ImageView();
-
+    public  int id = 0;
+    public String myPhone;
     //private final Image RedLED = new Image("C:\\Users\\Fatma\\Desktop\\80387600_991797001185054_8482131157683535872_n.jpg");
     //private final Image GreenLED = new Image("/images/LEDGreen.png");
       
     // private final Image[] listOfImages = { GreenLED};
-
-    public Users(Stage stage) throws SQLException {
+    public Users(Stage stage, PrintStream ps, DataInputStream dis, String phone){
 
         anchorPane = new AnchorPane();
         listView = new ListView();
         anchorPane0 = new AnchorPane();
+        myPhone = phone;
 
         setDividerPositions(0.29797979797979796);
         setMaxHeight(USE_PREF_SIZE);
@@ -65,6 +67,21 @@ public  class Users extends SplitPane {
         listView.setLayoutY(-9.0);
         listView.setPrefHeight(398.0);
         listView.setPrefWidth(175.0);
+              
+        listView.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+               String result = listView.getSelectionModel().getSelectedItem().toString(); 
+                 //String result = items.toString();
+                 System.out.println(result);
+                 ps.println("requestPlay," + myPhone  + ", "+ result);
+                 //String[] arr = result.split(".");
+                 //id = arr[1];
+            }
+        });
+     listView.getStylesheets().add(getClass().getResource("lisStyles.css").toExternalForm());
+     listView.getStyleClass().add("list-view");
+
 
         anchorPane0.setMinHeight(0.0);
         anchorPane0.setMinWidth(0.0);
@@ -72,43 +89,37 @@ public  class Users extends SplitPane {
         anchorPane0.setPrefWidth(100.0);
 
         anchorPane.getChildren().add(listView);
-        anchorPane0.getChildren().add(new OneToPc());
+
+        anchorPane0.getChildren().add(new ListViewBackGround(){});
+
         anchorPane0.setDisable(true);
         getItems().add(anchorPane);
         getItems().add(anchorPane0);
-     
 
- 
-       Connection Conn = null;
-       ResultSet rs = null;
-
-       
-            Connection conn = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/xo", "root", "ashraf");
+        
+        ps.println("requestUsers");
+        
+        listView.setItems(items);
+        
+        String arr[];
+        String online;
+        
+        try {
             
-            if (conn != null) {
-                System.out.println("Connected to the database!");
-            } else {
-                System.out.println("Failed to make connection!");
+            String readOnlineUsers = dis.readLine();
+            arr = readOnlineUsers.split(",");
+            online = arr[0];
+
+            if(online.compareTo("onlineUsers") == 0)
+            {
+                for (int i = 0; i < arr.length; i++) {
+                    items.add(arr[i]);
+                }
             }
-            Statement stmt = conn.createStatement();
+        } catch (IOException ex) {
+            Logger.getLogger(Users.class.getName()).log(Level.SEVERE, null, ex);
+        }                              
+        }
 
-       try {
-           rs = stmt.executeQuery("select * from users where state='online'");
-             listView.setItems(items);
-
-           while (rs.next()) {
-               items.add(rs.getString(2));
-               //imageView.setImage(GreenLED);
-              // setGraphic(imageView);
-               System.out.println(rs.getString(2));
-           }
-       } catch (SQLException e) {
-           JOptionPane.showMessageDialog(null,"data not found");
-       }
-
-   }
-
-   
-
-    
 }
+

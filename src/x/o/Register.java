@@ -1,49 +1,54 @@
 package x.o;
 
-import java.io.File;
-import java.sql.Statement;
+import java.io.DataInputStream;
+import java.io.PrintStream;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.Pane;
-import javafx.stage.FileChooser;
-import javafx.stage.Stage;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.effect.ColorAdjust;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
+import javafx.scene.text.Font;
+import javafx.stage.Stage;
 
 public class Register extends Pane {
 
-    protected final Label tel_label;
+    protected final ImageView imgPaneRegister;
+    protected final ColorAdjust colorAdjust;
+    protected final Label label;
     protected final TextField first_name_textfield;
-    protected final Label last_name_label;
-    protected final TextField last_name_textfield;
-    protected final Label email_label;
-    protected final TextField email_textfield;
-    protected final Label password_label;
-    protected final TextField password_textfield;
-    protected final Label confirm_label;
-    protected final TextField confirm_textfield;
-    protected final Label gender_label;
-    protected final Button register_button;
-    protected final TextField tel_textfield;
-    protected final Label last_name_label1;
-    protected final RadioButton gender_radio_button;
-    protected final RadioButton gender_radio_button0;
-    protected final Label label_required_email;
-    protected final Label label_required_tel;
-    protected final Label label_required_confirm;
     protected final Label label_required_fn;
+    protected final Label label0;
+    protected final TextField last_name_textfield;
     protected final Label label_required_ln;
+    protected final Label label1;
+    protected final TextField email_textfield;
+    protected final Label label_required_email;
+    protected final Label label2;
+    protected final TextField tel_textfiield;
+    protected final Label label_required_tel;
+    protected final Label label3;
+    protected final TextField password_textfield;
     protected final Label label_required_pass;
-     protected final FileChooser file;
-    protected final Button file_button;
+    protected final Label label4;
+    protected final TextField confirm_textfield;
+    protected final Label label_required_confirm;
+    protected final Label label5;
+    protected final RadioButton male_btn;
+    protected final RadioButton female_btn;
+    protected final Button button;
+    protected final Button button_back;
+        
     protected final ToggleGroup group ;
 
-
+    String ipadd;
     public static boolean isValidate(String phone_num) {
         Pattern p = Pattern.compile("\\d{11}");
         Matcher m =p.matcher(phone_num);
@@ -77,258 +82,266 @@ public class Register extends Pane {
         Matcher matcher =pattern.matcher(email);
         return matcher.find();
      }
-     
-    public Register() {
+      
+    public Register(PrintStream ps, DataInputStream dis, Stage stage, String _ip) {
 
+        ipadd = _ip;
         group = new ToggleGroup();
-        tel_label = new Label();
+        imgPaneRegister = new ImageView();
+        colorAdjust = new ColorAdjust();
+        label = new Label();
         first_name_textfield = new TextField();
-        last_name_label = new Label();
-        last_name_textfield = new TextField();
-        email_label = new Label();
-        email_textfield = new TextField();
-        password_label = new Label();
-        password_textfield = new TextField();
-        confirm_label = new Label();
-        confirm_textfield = new TextField();
-        gender_label = new Label();
-        register_button = new Button();
-        tel_textfield = new TextField();
-        last_name_label1 = new Label();
-        gender_radio_button = new RadioButton();
-        gender_radio_button0 = new RadioButton();
-        label_required_email = new Label();
-        label_required_tel = new Label();
-        label_required_confirm = new Label();
         label_required_fn = new Label();
+        label0 = new Label();
+        last_name_textfield = new TextField();
         label_required_ln = new Label();
+        label1 = new Label();
+        email_textfield = new TextField();
+        label_required_email = new Label();
+        label2 = new Label();
+        tel_textfiield = new TextField();
+        label_required_tel = new Label();
+        label3 = new Label();
+        password_textfield = new TextField();
         label_required_pass = new Label();
-        file=new FileChooser();
-        file_button=new Button("Upload Img");
-        
-        
-        
+        label4 = new Label();
+        confirm_textfield = new TextField();
+        label_required_confirm = new Label();
+        label5 = new Label();
+        male_btn = new RadioButton();
+        female_btn = new RadioButton();
+        button = new Button();
+        button_back = new Button();
+
         setMaxHeight(USE_PREF_SIZE);
         setMaxWidth(USE_PREF_SIZE);
         setMinHeight(USE_PREF_SIZE);
         setMinWidth(USE_PREF_SIZE);
-        setPrefHeight(437.0);
-        setPrefWidth(570.0);
+        setPrefHeight(414.0);
+        setPrefWidth(717.0);
 
-        tel_label.setLayoutX(21.0);
-        tel_label.setLayoutY(253.0);
-        tel_label.setPrefHeight(29.0);
-        tel_label.setPrefWidth(75.0);
-        tel_label.setText("Telephone");
+        imgPaneRegister.setFitHeight(365.0);
+        imgPaneRegister.setFitWidth(315.0);
+        imgPaneRegister.setLayoutX(338.0);
+        imgPaneRegister.setLayoutY(24.0);
+        imgPaneRegister.setPickOnBounds(true);
+        imgPaneRegister.setPreserveRatio(true);
+        imgPaneRegister.setRotate(20.0);
+        imgPaneRegister.setImage(new Image(getClass().getResource("media/paneback.jpeg").toExternalForm()));
 
-        first_name_textfield.setLayoutX(136.0);
-        first_name_textfield.setLayoutY(11.0);
-        first_name_textfield.setPrefHeight(29.0);
-        first_name_textfield.setPrefWidth(270.0);
-        first_name_textfield.setPromptText("Enter your first name");
+        imgPaneRegister.setEffect(colorAdjust);
 
+        label.setLayoutX(25.0);
+        label.setLayoutY(21.0);
+        label.setPrefHeight(20.0);
+        label.setPrefWidth(72.0);
+        label.setText("FirstName :");
 
-        last_name_label.setLayoutX(21.0);
-        last_name_label.setLayoutY(57.0);
-        last_name_label.setPrefHeight(29.0);
-        last_name_label.setPrefWidth(56.0);
-        last_name_label.setText("LastName");
-
-        last_name_textfield.setLayoutX(136.0);
-        last_name_textfield.setLayoutY(61.0);
-        last_name_textfield.setPrefHeight(29.0);
-        last_name_textfield.setPrefWidth(270.0);
-        last_name_textfield.setPromptText("Enter your last name");
-       
-
-        email_label.setLayoutX(20.0);
-        email_label.setLayoutY(107.0);
-        email_label.setPrefHeight(29.0);
-        email_label.setPrefWidth(56.0);
-        email_label.setText("E-mail");
-
-        email_textfield.setLayoutX(136.0);
-        email_textfield.setLayoutY(108.0);
-        email_textfield.setPrefHeight(29.0);
-        email_textfield.setPrefWidth(270.0);
-        email_textfield.setPromptText("Enter your Email");
-
-
-        password_label.setLayoutX(19.0);
-        password_label.setLayoutY(160.0);
-        password_label.setPrefHeight(25.0);
-        password_label.setPrefWidth(60.0);
-        password_label.setText("Password");
-
-        password_textfield.setLayoutX(136.0);
-        password_textfield.setLayoutY(157.0);
-        password_textfield.setPrefHeight(29.0);
-        password_textfield.setPrefWidth(270.0);
-        password_textfield.setPromptText("Enter your password");
-
-        
-
-        confirm_label.setLayoutX(17.0);
-        confirm_label.setLayoutY(208.0);
-        confirm_label.setPrefHeight(29.0);
-        confirm_label.setPrefWidth(96.0);
-        confirm_label.setText("Confirm Password");
-
-        confirm_textfield.setLayoutX(136.0);
-        confirm_textfield.setLayoutY(208.0);
-        confirm_textfield.setPrefHeight(29.0);
-        confirm_textfield.setPrefWidth(270.0);
-        confirm_textfield.setPromptText("Confirm your password");
-        
-        
-        gender_label.setLayoutX(21.0);
-        gender_label.setLayoutY(301.0);
-        gender_label.setPrefHeight(29.0);
-        gender_label.setPrefWidth(75.0);
-        gender_label.setText("Gender");
-
-        register_button.setLayoutX(234.0);
-        register_button.setLayoutY(383.0);
-        register_button.setMnemonicParsing(false);
-        register_button.setPrefHeight(40.0);
-        register_button.setPrefWidth(75.0);
-        register_button.setText("Register");
-
-         file_button.setLayoutX(20.0);
-        file_button.setLayoutY(340.0);
-        file_button.setMnemonicParsing(false);
-        file_button.setPrefHeight(35.0);
-        file_button.setPrefWidth(85.0);
-        
-        tel_textfield.setLayoutX(136.0);
-        tel_textfield.setLayoutY(253.0);
-        tel_textfield.setPrefHeight(29.0);
-        tel_textfield.setPrefWidth(270.0);
-        tel_textfield.setPromptText("Enter your phone number");
-
-        last_name_label1.setLayoutX(21.0);
-        last_name_label1.setLayoutY(11.0);
-        last_name_label1.setPrefHeight(29.0);
-        last_name_label1.setPrefWidth(59.0);
-        last_name_label1.setText("FirstName");
-
-        gender_radio_button.setLayoutX(136.0);
-        gender_radio_button.setLayoutY(303.0);
-        gender_radio_button.setMnemonicParsing(false);
-        gender_radio_button.setPrefHeight(29.0);
-        gender_radio_button.setPrefWidth(59.0);
-        gender_radio_button.setText("Male");
-         gender_radio_button.setToggleGroup(group);
-        
-
-        gender_radio_button0.setFocusTraversable(true);
-        gender_radio_button0.setLayoutX(242.0);
-        gender_radio_button0.setLayoutY(305.0);
-        gender_radio_button0.setMnemonicParsing(false);
-        gender_radio_button0.setPrefHeight(29.0);
-        gender_radio_button0.setPrefWidth(59.0);
-        gender_radio_button0.setText("Female");
-         gender_radio_button0.setToggleGroup(group);
-        
-
-        label_required_email.setDisable(true);
-        label_required_email.setLayoutX(138.0);
-        label_required_email.setLayoutY(138.0);
-        label_required_email.setPrefHeight(17.0);
-        label_required_email.setPrefWidth(270.0);
-
-        label_required_tel.setDisable(true);
-        label_required_tel.setLayoutX(136.0);
-        label_required_tel.setLayoutY(282.0);
-        label_required_tel.setPrefHeight(17.0);
-        label_required_tel.setPrefWidth(270.0);
-
-        label_required_confirm.setDisable(true);
-        label_required_confirm.setLayoutX(136.0);
-        label_required_confirm.setLayoutY(232.0);
-        label_required_confirm.setPrefHeight(17.0);
-        label_required_confirm.setPrefWidth(270.0);
+        first_name_textfield.setFocusTraversable(false);
+        first_name_textfield.setLayoutX(144.0);
+        first_name_textfield.setLayoutY(19.0);
+        first_name_textfield.setPrefHeight(25.0);
+        first_name_textfield.setPrefWidth(239.0);
+        first_name_textfield.setPromptText("Enter your firstName");
+        first_name_textfield.setStyle("-fx-background-color: none; -fx-border-color: black;");
 
         label_required_fn.setDisable(true);
-        label_required_fn.setLayoutX(136.0);
-        label_required_fn.setLayoutY(40.0);
+        label_required_fn.setLayoutX(144.0);
+        label_required_fn.setLayoutY(43.0);
         label_required_fn.setPrefHeight(17.0);
-        label_required_fn.setPrefWidth(270.0);
+        label_required_fn.setPrefWidth(239.0);
+
+        label0.setLayoutX(25.0);
+        label0.setLayoutY(64.0);
+        label0.setPrefHeight(20.0);
+        label0.setPrefWidth(72.0);
+        label0.setText("lastName :");
+
+        last_name_textfield.setFocusTraversable(false);
+        last_name_textfield.setLayoutX(144.0);
+        last_name_textfield.setLayoutY(64.0);
+        last_name_textfield.setPrefHeight(25.0);
+        last_name_textfield.setPrefWidth(239.0);
+        last_name_textfield.setPromptText("Enter your lastName");
+        last_name_textfield.setStyle("-fx-background-color: none; -fx-border-color: black;");
 
         label_required_ln.setDisable(true);
-        label_required_ln.setLayoutX(136.0);
-        label_required_ln.setLayoutY(90.0);
+        label_required_ln.setLayoutX(144.0);
+        label_required_ln.setLayoutY(89.0);
         label_required_ln.setPrefHeight(17.0);
-        label_required_ln.setPrefWidth(270.0);
+        label_required_ln.setPrefWidth(239.0);
+
+        label1.setLayoutX(28.0);
+        label1.setLayoutY(108.0);
+        label1.setPrefHeight(20.0);
+        label1.setPrefWidth(55.0);
+        label1.setText("Email :");
+
+        email_textfield.setFocusTraversable(false);
+        email_textfield.setLayoutX(144.0);
+        email_textfield.setLayoutY(107.0);
+        email_textfield.setPrefHeight(25.0);
+        email_textfield.setPrefWidth(239.0);
+        email_textfield.setPromptText("Enter your Email");
+        email_textfield.setStyle("-fx-background-color: none; -fx-border-color: black;");
+
+        label_required_email.setDisable(true);
+        label_required_email.setLayoutX(144.0);
+        label_required_email.setLayoutY(132.0);
+        label_required_email.setPrefHeight(17.0);
+        label_required_email.setPrefWidth(239.0);
+
+        label2.setLayoutX(28.0);
+        label2.setLayoutY(151.0);
+        label2.setPrefHeight(20.0);
+        label2.setPrefWidth(72.0);
+        label2.setText("Telephone :");
+
+        tel_textfiield.setFocusTraversable(false);
+        tel_textfiield.setLayoutX(144.0);
+        tel_textfiield.setLayoutY(151.0);
+        tel_textfiield.setPrefHeight(25.0);
+        tel_textfiield.setPrefWidth(239.0);
+        tel_textfiield.setPromptText("Enter your phone");
+        tel_textfiield.setStyle("-fx-background-color: none; -fx-border-color: black;");
+
+        label_required_tel.setDisable(true);
+        label_required_tel.setLayoutX(144.0);
+        label_required_tel.setLayoutY(176.0);
+        label_required_tel.setPrefHeight(17.0);
+        label_required_tel.setPrefWidth(239.0);
+
+        label3.setLayoutX(28.0);
+        label3.setLayoutY(197.0);
+        label3.setPrefHeight(20.0);
+        label3.setPrefWidth(72.0);
+        label3.setText("Password :");
+
+        password_textfield.setFocusTraversable(false);
+        password_textfield.setLayoutX(144.0);
+        password_textfield.setLayoutY(195.0);
+        password_textfield.setPrefHeight(25.0);
+        password_textfield.setPrefWidth(239.0);
+        password_textfield.setPromptText("Enter your password");
+        password_textfield.setStyle("-fx-background-color: none; -fx-border-color: black;");
 
         label_required_pass.setDisable(true);
-        label_required_pass.setLayoutX(136.0);
-        label_required_pass.setLayoutY(186.0);
+        label_required_pass.setLayoutX(144.0);
+        label_required_pass.setLayoutY(220.0);
         label_required_pass.setPrefHeight(17.0);
-        label_required_pass.setPrefWidth(270.0);
+        label_required_pass.setPrefWidth(239.0);
 
-        getChildren().add(tel_label);
+        label4.setLayoutX(28.0);
+        label4.setLayoutY(239.0);
+        label4.setPrefHeight(20.0);
+        label4.setPrefWidth(108.0);
+        label4.setText("Confirm Password :");
+
+        confirm_textfield.setFocusTraversable(false);
+        confirm_textfield.setLayoutX(144.0);
+        confirm_textfield.setLayoutY(237.0);
+        confirm_textfield.setPrefHeight(25.0);
+        confirm_textfield.setPrefWidth(239.0);
+        confirm_textfield.setPromptText("confirm your password");
+        confirm_textfield.setStyle("-fx-background-color: none; -fx-border-color: black;");
+
+        label_required_confirm.setDisable(true);
+        label_required_confirm.setLayoutX(144.0);
+        label_required_confirm.setLayoutY(262.0);
+        label_required_confirm.setPrefHeight(17.0);
+        label_required_confirm.setPrefWidth(239.0);
+
+        label5.setLayoutX(28.0);
+        label5.setLayoutY(287.0);
+        label5.setPrefHeight(20.0);
+        label5.setPrefWidth(98.0);
+        label5.setText("Gender :");
+
+        male_btn.setLayoutX(144.0);
+        male_btn.setLayoutY(289.0);
+        male_btn.setMnemonicParsing(false);
+        male_btn.setPrefHeight(25.0);
+        male_btn.setPrefWidth(55.0);
+        male_btn.setText("Male");
+        male_btn.setToggleGroup(group);
+        
+        female_btn.setLayoutX(264.0);
+        female_btn.setLayoutY(289.0);
+        female_btn.setMnemonicParsing(false);
+        female_btn.setPrefHeight(25.0);
+        female_btn.setPrefWidth(79.0);
+        female_btn.setText("Female");
+        female_btn.setToggleGroup(group);
+
+        button.setLayoutX(150.0);
+        button.setLayoutY(342.0);
+        button.setMnemonicParsing(false);
+        button.setPrefHeight(47.0);
+        button.setPrefWidth(98.0);
+        button.setStyle("-fx-background-color: none; -fx-border-color: black;");
+        button.setText("Register");
+        button.setFont(new Font("Arial Rounded MT Bold", 14.0));
+        
+        
+        
+        button_back.setLayoutX(350.0);
+        button_back.setLayoutY(342.0);
+        button_back.setMnemonicParsing(false);
+        button_back.setPrefHeight(47.0);
+        button_back.setPrefWidth(98.0);
+        button_back.setStyle("-fx-background-color: none; -fx-border-color: black;");
+        button_back.setText("Back");
+        button_back.setFont(new Font("Arial Rounded MT Bold", 14.0));
+        
+
+        getChildren().add(imgPaneRegister);
+        getChildren().add(label);
         getChildren().add(first_name_textfield);
-        getChildren().add(last_name_label);
-        getChildren().add(last_name_textfield);
-        getChildren().add(email_label);
-        getChildren().add(email_textfield);
-        getChildren().add(password_label);
-        getChildren().add(password_textfield);
-        getChildren().add(confirm_label);
-        getChildren().add(confirm_textfield);
-        getChildren().add(gender_label);
-        getChildren().add(register_button);
-        getChildren().add(tel_textfield);
-        getChildren().add(last_name_label1);
-        getChildren().add(gender_radio_button);
-        getChildren().add(gender_radio_button0);
-        getChildren().add(label_required_email);
-        getChildren().add(label_required_tel);
-        getChildren().add(label_required_confirm);
         getChildren().add(label_required_fn);
+        getChildren().add(label0);
+        getChildren().add(last_name_textfield);
         getChildren().add(label_required_ln);
+        getChildren().add(label1);
+        getChildren().add(email_textfield);
+        getChildren().add(label_required_email);
+        getChildren().add(label2);
+        getChildren().add(tel_textfiield);
+        getChildren().add(label_required_tel);
+        getChildren().add(label3);
+        getChildren().add(password_textfield);
         getChildren().add(label_required_pass);
-        getChildren().add(file_button);
-         
-         
-         Stage s = null;
-        file_button.addEventHandler(ActionEvent.ACTION, new EventHandler<ActionEvent>(){
-         
+        getChildren().add(label4);
+        getChildren().add(confirm_textfield);
+        getChildren().add(label_required_confirm);
+        getChildren().add(label5);
+        
+        getChildren().add(male_btn);
+        getChildren().add(female_btn);
+        getChildren().add(button);
+        getChildren().add(button_back);
+        
+        
+          button.addEventHandler(ActionEvent.ACTION,new EventHandler<ActionEvent>(){
             @Override
             public void handle(ActionEvent event) {
                 
-                File selectedFile= file.showOpenDialog(s);
-      
-            }
-         
-        });
-        
-        
-          register_button.addEventHandler(ActionEvent.ACTION,new EventHandler<ActionEvent>(){
-            @Override
-            public void handle(ActionEvent event) {
-                
-                if(tel_textfield.getText().isEmpty())
+                if(tel_textfiield.getText().isEmpty())
                 {
-                          label_required_tel.setDisable(false);
-                         label_required_tel.setText("* you should Enter your phone");
-                         label_required_tel.setTextFill(javafx.scene.paint.Color.RED);
-                       
+                    label_required_tel.setDisable(false);
+                    label_required_tel.setText("* you should Enter your phone");
+                    label_required_tel.setTextFill(javafx.scene.paint.Color.RED);
                 }
                 
-                else if(!(isValidate(tel_textfield.getText())))
-                  {
+                else if(!(isValidate(tel_textfiield.getText())))
+                {
                         
-                        label_required_tel.setDisable(false);
-                         label_required_tel.setText("* you should Enter a valid phonenumber");
-                         label_required_tel.setTextFill(javafx.scene.paint.Color.RED);
-                         
-                       
-                      
-                  }else  
+                    label_required_tel.setDisable(false);
+                    label_required_tel.setText("* you should Enter a valid phonenumber");
+                    label_required_tel.setTextFill(javafx.scene.paint.Color.RED);
+                }
+                else  
                 { 
-                    // ba2e yro7 ll login                       
+                    // ba2e yro7 ll login
                     label_required_tel.setText("");
                     label_required_tel.setDisable(true);
 
@@ -338,36 +351,30 @@ public class Register extends Pane {
                 {
                     label_required_fn.setDisable(false);
                     label_required_fn.setText("* You should enter your Fname");
-                     label_required_fn.setTextFill(javafx.scene.paint.Color.RED);
-                         
-                
+                    label_required_fn.setTextFill(javafx.scene.paint.Color.RED);                
                 }
                 else if((firstNameValidate(first_name_textfield.getText())))
                 {
                     label_required_fn.setText(" ");
-                        label_required_fn.setDisable(true);
-                        
+                    label_required_fn.setDisable(true);
                 }
                 else
                 {
-                         label_required_fn.setDisable(false);
+                    label_required_fn.setDisable(false);
                     label_required_fn.setText("* You should enter valid Fname");
-                     label_required_fn.setTextFill(javafx.scene.paint.Color.RED);
-                         
+                    label_required_fn.setTextFill(javafx.scene.paint.Color.RED);
                 }
             
                 if(last_name_textfield.getText().isEmpty())
                 {
                     label_required_ln.setDisable(false);
                     label_required_ln.setText("* You should enter your lname");
-                     label_required_ln.setTextFill(javafx.scene.paint.Color.RED);
-                         
-                
+                    label_required_ln.setTextFill(javafx.scene.paint.Color.RED);
                 }
                 else if((lastNameValidate(last_name_textfield.getText())))
                 {
-                        label_required_ln.setText(" ");
-                        label_required_ln.setDisable(true);
+                    label_required_ln.setText(" ");
+                    label_required_ln.setDisable(true);
                         
                 }
                 else
@@ -378,42 +385,37 @@ public class Register extends Pane {
                          
                 }
                 
-            if(password_textfield.getText().isEmpty())
-            {
-            
-                 label_required_pass.setDisable(false);
-                 label_required_pass.setText("* You should enter your Password");
-                  label_required_pass.setTextFill(javafx.scene.paint.Color.RED);
-            }else if(passwdValidate(password_textfield.getText()))
-            {
-            
-                 label_required_pass.setDisable(true);
-                 label_required_pass.setText(" ");
-            }
-            else 
-            {
-            
-                 label_required_pass.setDisable(false);
-                 label_required_pass.setText("* digits , char, specialChar");
-                 label_required_pass.setTextFill(javafx.scene.paint.Color.RED);
+                if(password_textfield.getText().isEmpty())
+                {
 
-            }
+                    label_required_pass.setDisable(false);
+                    label_required_pass.setText("* You should enter your Password");
+                    label_required_pass.setTextFill(javafx.scene.paint.Color.RED);
+                }
+                else if(passwdValidate(password_textfield.getText()))
+                {
+            
+                    label_required_pass.setDisable(true);
+                    label_required_pass.setText(" ");
+                }
+                else 
+                {
+            
+                    label_required_pass.setDisable(false);
+                    label_required_pass.setText("* digits , char, specialChar");
+                    label_required_pass.setTextFill(javafx.scene.paint.Color.RED);
+                }
 
                 if((password_textfield.getText().equals( confirm_textfield.getText())))
                 {
                     label_required_confirm.setDisable(true);
-                    label_required_confirm.setText(" ");
-                    
+                    label_required_confirm.setText(" ");  
                 }
                 else
                 {
-                    
                     label_required_confirm.setDisable(false);
                     label_required_confirm.setText("* you should match your password");
                     label_required_confirm.setTextFill(javafx.scene.paint.Color.RED);
-
-                
-                
                 }
                 
                 if(email_textfield.getText()==null)
@@ -424,23 +426,43 @@ public class Register extends Pane {
                 }
                 else if(!(emailValidate(email_textfield.getText())))
                 {
-                
                     label_required_email.setDisable(false);
                     label_required_email.setText("Enter validate E-mail 'char@char.com'");
-                    label_required_email.setTextFill(javafx.scene.paint.Color.RED);    
-                
+                    label_required_email.setTextFill(javafx.scene.paint.Color.RED);
                 }
-                else {
+                else
+                {
                 
+                    String gender;
+                    System.out.println(group.getSelectedToggle().getUserData());
+                    if(group.toString().compareTo("Female") == 0)
+                        gender = "f";
+                    else
+                        gender = "m";
+                        
                     label_required_email.setDisable(true);
-                    label_required_email.setText(" ");
-                    
+                    label_required_email.setText("");
+                    System.out.println(gender);
+                    ps.println("register," + 
+                            first_name_textfield.getText() + "," + 
+                            email_textfield.getText() + "," +
+                            password_textfield.getText() + "," +
+                            tel_textfiield.getText()+ "," +
+                            gender);
                 }
-              
             }
+        });
+          
+           button_back.setOnAction((ActionEvent event) -> {
+
+            stage.getScene().setRoot(new Login(stage , ipadd));
 
         });
-      
-        
+
     }
 }
+
+        
+
+    
+

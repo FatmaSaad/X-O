@@ -1,7 +1,18 @@
 package x.o;
 
-import static x.o.GFG.findBestMove;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
 import static java.lang.Thread.sleep;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.event.ActionEvent;
@@ -11,14 +22,16 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
 import javafx.scene.shape.Line;
+import javafx.stage.Stage;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
-//[123] [123][123]]
-public  class OneToPc extends AnchorPane {
-    
-    
-    
-    
+import static x.o.GFG.findBestMove;
+
+public class PlayGame extends AnchorPane {
 
     protected final ImageView imageView;
     protected final Label label;
@@ -27,8 +40,8 @@ public  class OneToPc extends AnchorPane {
     protected final Label player1name;
     protected final Label win2;
     protected final Label win1;
-   protected final Button[] p=new Button[9];
-    
+    protected final Button[] p = new Button[9];
+
     protected final Button button;
     protected final Line linex1;
     protected final Line linex2;
@@ -39,20 +52,87 @@ public  class OneToPc extends AnchorPane {
     protected final Line linev2;
     protected final Line linev3;
     protected final Button button0;
+  protected final Button button2;
+
+    protected final MediaView mediaView;
+
     
-    
-    
-    
-    
-    
-    
-    ////////////////////////////////////////////////
-boolean flag=true;
-    char board[][] = {{ '_', '_', '_' }, 
+    /**
+     *declaration variable wich needed in function but declared here
+     * to be visual by all function in the class TwoPlayr.java 
+     * first for  score1,2 for assigning the score of first player and second player 
+     * lable wich visualed in the heighst of gui board of x,o game\
+     * and the flag one for making swaping between user whch play with x mode or O mode 
+     * if user chose true the user play with x value other casrr play with o value
+     * flagplayer used to score the value of flag to the owner
+     * and save it in all game but it is used in check winnner to know who final winner 
+     * instead the flag wich changed from game turn to another
+     * 
+     * STRING {AA} string aa which recive the string value of the button text
+     * to check the state of winner using function of checkwinner()
+     * 
+     * String record used to record all actions done over buttons to 
+     * recieve it it also declared in every button and make an contanetane with delimetr 
+     * 
+     * media for media declarate video effect
+     * 
+     */
+    int score1;
+    int score2;
+    boolean flag = true;
+ boolean flagpc = true;
+    boolean flagplayer;
+    boolean flagpcon;
+    String mm = "";
+    boolean flagrecord;
+
+    String[][] aa = {
+        {"", "", ""},
+        {"", "", ""},
+        {"", "", ""}
+    };
+     char bb[][] = {{ '_', '_', '_' }, 
 					{ '_', '_', '_' }, 
 					{ '_', '_', '_' }}; 
 
-    public OneToPc() {
+
+    String record = flag + ",";
+    Media media;
+    MediaPlayer mediaPlayer;
+
+    Media media2;
+    MediaPlayer mediaPlayer2;
+
+    /**
+     * 
+     * @param s1
+     * s1 for get the strin g of name fo first player that passes from login page
+     * 
+     * @param s2
+     * s1 for get the strin g of name fo second  player that passes from login page
+     * @param sc1
+     * s1 for get the integer  g of score  for first player that passes from login page
+     * @param sc2 
+     *      * s1 for get the integer  g of score  for second  player that passes from login page
+
+     */
+    public PlayGame (String s1,String s2,boolean flagplayerR,boolean isrecord,boolean _flagpcon, Stage stage) {
+
+        // winner
+        media = new Media(new File(System.getProperty("user.dir") + "\\src\\x\\o\\media\\winner.mp4").toURI().toString());
+        mediaPlayer = new MediaPlayer(media);
+        // loser
+        media2 = new Media(new File(System.getProperty("user.dir") + "\\src\\x\\o\\media\\loser.mp4").toURI().toString());
+        mediaPlayer2 = new MediaPlayer(media2);
+
+        score1 = 0;
+        score2 = 0;
+
+        mediaView = new MediaView();
+        mediaView.setFitHeight(414.0);
+        mediaView.setFitWidth(717.0);
+        mediaView.setLayoutX(0);
+        mediaView.setLayoutY(0);
 
         imageView = new ImageView();
         label = new Label();
@@ -61,16 +141,17 @@ boolean flag=true;
         player1name = new Label();
         win2 = new Label();
         win1 = new Label();
-       p[0] = new Button();
+        p[0] = new Button();
         p[3] = new Button();
         p[2] = new Button();
         p[1] = new Button();
         p[5] = new Button();
-        p[4 ]= new Button();
-        p[6 ]= new Button();
-        p[8 ]= new Button();
-        p[7 ]= new Button();
+        p[4] = new Button();
+        p[6] = new Button();
+        p[8] = new Button();
+        p[7] = new Button();
         button = new Button();
+        button2 = new Button();
         linex1 = new Line();
         linex2 = new Line();
         line1 = new Line();
@@ -90,7 +171,7 @@ boolean flag=true;
         imageView.setLayoutX(-17.0);
         imageView.setPickOnBounds(true);
         imageView.setPreserveRatio(true);
-        imageView.setImage(new Image(getClass().getResource("nn.gif").toExternalForm()));
+        imageView.setImage(new Image(getClass().getResource("media/nn.gif").toExternalForm()));
 
         label.setLayoutX(374.0);
         label.setLayoutY(44.0);
@@ -133,7 +214,7 @@ boolean flag=true;
         win2.setPrefHeight(36.0);
         win2.setPrefWidth(28.0);
         win2.setStyle("-fx-font-size: 50;");
-        win2.setText("0");
+        win2.setText(String.valueOf(score2));
         win2.setTextFill(javafx.scene.paint.Color.WHITE);
 
         win1.setAlignment(javafx.geometry.Pos.BASELINE_CENTER);
@@ -142,7 +223,7 @@ boolean flag=true;
         win1.setPrefHeight(36.0);
         win1.setPrefWidth(28.0);
         win1.setStyle("-fx-font-size: 50;");
-        win1.setText("0");
+        win1.setText(String.valueOf(score1));
         win1.setTextFill(javafx.scene.paint.Color.WHITE);
 
         p[0].setLayoutX(187.0);
@@ -225,6 +306,9 @@ boolean flag=true;
         button.setStyle("-fx-border-color: white; -fx-background-color: rgba(0,0,0,0); -fx-border-width: 8; -fx-border-radius: 50;");
         button.setText("Back");
         button.setTextFill(javafx.scene.paint.Color.valueOf("#c6ff0c"));
+        button.setOnAction((ActionEvent event) -> {
+            stage.getScene().setRoot(new PlayingModes(stage));
+        });
 
         linex1.setEndX(356.0);
         linex1.setEndY(-45.0);
@@ -321,9 +405,19 @@ boolean flag=true;
         button0.setPrefHeight(66.0);
         button0.setPrefWidth(78.0);
         button0.setStyle("-fx-border-color: white; -fx-background-color: rgba(0,0,0,0); -fx-border-width: 8; -fx-border-radius: 50;");
-        button0.setText("Back");
+        button0.setText("Repeat");
         button0.setTextFill(javafx.scene.paint.Color.valueOf("#c6ff0c"));
-        button0.setVisible(false);
+        button0.setVisible(true);
+        
+          button2.setLayoutX(573.0);
+        button2.setLayoutY(200.0);
+        button2.setMnemonicParsing(false);
+        button2.setPrefHeight(66.0);
+        button2.setPrefWidth(78.0);
+        button2.setStyle("-fx-border-color: white; -fx-background-color: rgba(0,0,0,0); -fx-border-width: 8; -fx-border-radius: 50;");
+        button2.setText("Back");
+        button2.setTextFill(javafx.scene.paint.Color.valueOf("#c6ff0c"));
+        button2.setVisible(true);
 
         getChildren().add(imageView);
         getChildren().add(label);
@@ -332,6 +426,7 @@ boolean flag=true;
         getChildren().add(player1name);
         getChildren().add(win2);
         getChildren().add(win1);
+        getChildren().add(mediaView);
         getChildren().add(p[0]);
         getChildren().add(p[3]);
         getChildren().add(p[2]);
@@ -352,486 +447,349 @@ boolean flag=true;
         getChildren().add(linev3);
         getChildren().add(button0);
 
-        
         //////////////////////////////
        
-           new Thread (){
-          public void   run(){
-                while(true)
-                {
-                // System.out.println("heeloo worled");
-                 /*   try {
-                          sleep(1200);
-                         p[0].setDisable(true);
-                        sleep(1200);
-                        p[0].setDisable(false);
-                    } catch (InterruptedException ex) {
-                        Logger.getLogger(FXMLDocumentBase.class.getName()).log(Level.SEVERE, null, ex);
-                    }*/
-                 
-                 if  (checkWinner ())
-                 {
-                     
-                     for(int i=0;i<9;i++)
-                     {
-                         p[i].setDisable(true);
-                     }
-                 
-                        this.stop();
-                 }
-                    }
-                
-            }
-        }.start();
-           
-       
-     
-        setplayer("HEIDY", "AHMED");
+ flagplayer=flag=flagplayerR;
+       flagrecord=isrecord;
+       flagpcon=_flagpcon;
+        setplayer(s1, s2);
         
+//calling function 
+for(int i =0;i<9;i++)
+{
+    buttonsevents(i);
+}
         
-             buttonsevents();
-     
-           button.setOnAction(new EventHandler<ActionEvent>() {
+//button reset
+/**
+ * button two for reset thw value of keys and all strings such as aa for displaying record and check winner 
+ * and makin =g disable false to make abiliry of user to play again
+ * and closing all values of lines wiith zero 
+ * and also close the video game
+ */
+        button0.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-              
-      
-            }
-        });
-                 
-                  System.err.println("fff");
 
        
+                for (int i = 0; i < 9; i++) {
+                    p[i].setDisable(false);
+                    p[i].setText("");
+
+                }
+                for (int k = 0; k < 3; k++) {
+                    for (int m = 0; m < 3; m++) {
+                        aa[k][m] = "";
+                        bb[k][m] = '_';
+                        
+                    }
+
+                }
+                line1.setVisible(false);
+                line2.setVisible(false);
+                line3.setVisible(false);
+                linev1.setVisible(false);
+                linev2.setVisible(false);
+                linev3.setVisible(false);
+                linex1.setVisible(false);
+                linex2.setVisible(false);
+                flag = flagplayer;
+
+                mediaView.setVisible(false);
+                mediaPlayer.setAutoPlay(false);
+                mediaPlayer.stop();
+                mediaPlayer2.setAutoPlay(false);
+                mediaPlayer2.stop();
+                //System.out.println(record);
+
+                record = flagplayer + ",";
+                flagpcon=_flagpcon;
+                flagpc=true;
+
+            }
+        });
+
     }
-    public void  setplayer (String s1, String s2)
-    {
+/**
+ * 
+ * @param s1
+ * for passing the value of s1 and s2 from constructor 
+ * to the lable of the board gamefor player one
+ * @param s2 
+ * for passing the value of s1 and s2 from constructor 
+ * to the lable of the board gamefor player two
+ */
+    public void setplayer(String s1, String s2) {
         player1name.setText(s1);
         player2name.setText(s2);
-        
-    }
-    
-    public boolean checkWinner ()
-    {
-    String  [][]aa={
-                    {p[0].getText(),p[1].getText(),p[2].getText()},
-                      {p[3].getText(),p[4].getText(),p[5].getText()},
-                       {p[6].getText(),p[7].getText(),p[8].getText()}
-                  }; 
-    
-    
-                    if(aa[0][0].equals(aa[0][1])&&aa[0][2].equals(aa[0][1])&&!aa[0][1].equals(""))
-                    {
-       
-            line1.setVisible(true);
-               return true;
-          
-                   //  JOptionPane.showMessageDialog(null, "the winner is ");
-                    }
-                    if( aa[1][0].equals(aa[1][1])&&aa[1][2].equals(aa[1][1])&&!aa[1][1].equals(""))
-                        {
-                             line2.setVisible(true);
-                                 return true;
-                    }
-                        
-                        
-                        if( aa[2][0].equals(aa[2][1])&&aa[2][2].equals(aa[2][1])&&!aa[2][1].equals(""))
-                            {
-                                 line3.setVisible(true);
-                        return true;
-                    }
-                            
-                            
-                            
-                            
-                  if(aa[0][0].equals(aa[1][0])&&aa[2][0].equals(aa[1][0])&&!aa[1][0].equals(""))
-                    {
-                         linev1.setVisible(true);
-                         return true;
-                    }
-                if( aa[0][1].equals(aa[1][1])&&aa[2][1].equals(aa[1][1])&&!aa[1][1].equals(""))
-                    {
-                         linev2.setVisible(true);
-                       return true;
-                    }
-                       
-                 if( aa[0][2].equals(aa[1][2])&&aa[2][2].equals(aa[1][2])&&!aa[1][2].equals(""))
-                            {
-                                 linev3.setVisible(true);
-                                    return true;
-                    }
-                 if( aa[0][0].equals(aa[1][1])&&aa[2][2].equals(aa[1][1])&&!aa[1][1].equals(""))
-                            {
-                                 linex2.setVisible(true);
-                                    return true;
-                    }
-                      if( aa[0][2].equals(aa[1][1])&&aa[2][0].equals(aa[1][1])&&!aa[1][1].equals(""))
-                            {
-                                 linex1.setVisible(true);
-                                    return true;
-                    }       
-    
-      //
-    //  System.err.println(aa[0][0].equals(aa[0][1])&&aa[0][2].equals(aa[0][1]));
-        return false;
-    }
-    
-    /**
-      
-     
-     */
-    public void buttonsevents(){
-         p[0].setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-          if(flag==true)
-          {
-           
-                  p[0].setText("X");
-           flag=!flag;
-           
-           p[0].setDisable(true);
-              board[0][0]='x';
-           
-          }else
-          {
-                 p[0].setText("O");
-           flag=!flag;
-           p[0].setDisable(true);
-              board[0][0]='o';
-          }
-               fire( board);      
-            }
-        });
-         p[1].setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-          if(flag==true)
-          {
-           p[1].setText("X");
-           flag=!flag;
-           board[0][1]='x';
-           
-           p[1].setDisable(true);
-          }else
-          {
-                 p[1].setText("O");
-           flag=!flag;
-           p[1].setDisable(true);
-           board[0][1]='o';
-          }
-        fire( board);     
-            }
-        });
-          p[2].setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-          if(flag==true)
-          {
-           p[2].setText("X");
-           flag=!flag;
-           
-           p[2].setDisable(true);
-           board[0][2]='x';
-          }else
-          {
-                 p[2].setText("O");
-           flag=!flag; 
-           board[0][2]='o';
-           
-           p[2].setDisable(true);
-           
-          }
-          fire( board);     
-            }
-        });
-           p[3].setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-          if(flag==true)
-          {
-           p[3].setText("X");
-           flag=!flag;
-              board[1][0]='x';
-              
-           p[3].setDisable(true);
-         
-          }else
-          {
-                 p[3].setText("O");
-           flag=!flag;
-            board[1][0]='o';
-           p[3].setDisable(true);
-          }
-              fire( board);     
-            }
-        });
-            p[4].setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-          if(flag==true)
-          {
-           p[4].setText("X");
-           flag=!flag;
-            board[1][1]='x';
-           
-           p[4].setDisable(true);
-          }else
-          {
-                 p[4].setText("O");
-           flag=!flag;
-               board[1][1]='o';
-           p[4].setDisable(true);
-          }
-                fire( board);     
-            }
-        }); p[5].setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-          if(flag==true)
-          {
-           p[5].setText("X");
-           flag=!flag;
-               board[1][2]='x';
-           p[5].setDisable(true);
-          }else
-          {
-                 p[5].setText("O");
-           flag=!flag;
-              board[1][2]='o';
-           p[5].setDisable(true);
-          }
-              fire( board);    
-            }
-                  
-        });
-         p[6].setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-          if(flag==true)
-          {
-           p[6].setText("X");
-           flag=!flag;
-              board[2][0]='x';
-           p[6].setDisable(true);
-          }else
-          {
-                 p[6].setText("O");
-           flag=!flag;
-            board[2][0]='o';
-           p[6].setDisable(true);
-          }
-                fire( board);           
-            }
-        });
-          p[7].setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-          if(flag==true)
-          {
-           p[7].setText("X");
-           flag=!flag;
-                board[2][1]='x';
-           p[7].setDisable(true);
-          }else
-          {
-                 p[7].setText("O");
-           flag=!flag;
-                   board[2][1]='o';
-           p[7].setDisable(true);
-          }
-                fire( board);     
-            }
-        });
-           p[8].setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-          if(flag==true)
-          {
-           p[8].setText("X");
-           flag=!flag;
-                 board[2][2]='x';
-           p[8].setDisable(true);
-          }else
-          {
-                 p[8].setText("O");
-             
-           flag=!flag;
-                 board[2][2]='o';
-           p[8].setDisable(true);
-          }
-         fire( board);            
 
+    }
+/**
+ * checkwoinner function 
+ * at first get the values of keys and save it to the 2D array of string 
+ * to make condition of all cases that user play with it
+ * and final thing that the array of record will save the data in new file created then make it printed on console 
+ * then save the pase with append it to another  file created before it is name records
+ * then making condition opening video for winner or looser after making check in 
+ * if value of mm if not equal space and check in if x and flag must be true 
+ * or o and flag must be false and third case for making the opponent wins
+ */
+    public void checkWinner() {
+       
+         
+   
+      
+        
+         
+    
+	aa[0][0] = p[0].getText();
+        aa[0][1] = p[1].getText();
+        aa[0][2] = p[2].getText();
+        
+       aa[1][0] = p[3].getText();
+        aa[1][1] = p[4].getText();
+        aa[1][2] = p[5].getText();
+
+        aa[2][0] = p[6].getText();
+        aa[2][1] = p[7].getText();
+        aa[2][2] = p[8].getText();
+  
+        if (aa[0][0].equals(aa[0][1]) && aa[0][2].equals(aa[0][1]) && !aa[0][1].equals("")) {
+
+            line1.setVisible(true);
+            System.out.println(aa[0][0]);
+            mm = aa[0][0];
+
+        }
+        if (aa[1][0].equals(aa[1][1]) && aa[1][2].equals(aa[1][1]) && !aa[1][1].equals("")) {
+            line2.setVisible(true);
+            score1++;
+            win1.setText(String.valueOf(score1));
+            mm = aa[1][0];
+        }
+
+        if (aa[2][0].equals(aa[2][1]) && aa[2][2].equals(aa[2][1]) && !aa[2][1].equals("")) {
+            line3.setVisible(true);
+            mm = aa[2][0];
+        }
+
+        if (aa[0][0].equals(aa[1][0]) && aa[2][0].equals(aa[1][0]) && !aa[1][0].equals("")) {
+            linev1.setVisible(true);
+            mm = aa[0][0];
+        }
+        if (aa[0][1].equals(aa[1][1]) && aa[2][1].equals(aa[1][1]) && !aa[1][1].equals("")) {
+            linev2.setVisible(true);
+            mm = aa[0][1];
+        }
+        if (aa[0][2].equals(aa[1][2]) && aa[2][2].equals(aa[1][2]) && !aa[1][2].equals("")) {
+            linev3.setVisible(true);
+            mm = aa[0][2];
+        }
+        if (aa[0][0].equals(aa[1][1]) && aa[2][2].equals(aa[1][1]) && !aa[1][1].equals("")) {
+            linex2.setVisible(true);
+            mm = aa[0][0];
+        }
+        if (aa[0][2].equals(aa[1][1]) && aa[2][0].equals(aa[1][1]) && !aa[1][1].equals("")) {
+            linex1.setVisible(true);
+            mm = aa[0][2];
+        }
+        /**
+         * for checking winner for every player by making if condition to check
+         * flag to detect if user play with x or O
+         */
+        
+                     if(!isMovesLeft(aa)&&mm.equals(""))
+                {
+                  
+                      System.out.println("hena fe t3adooooooooooooooooooooooooool");
+                       JOptionPane.showMessageDialog(null, "t3adool");
+                }               
+        if (!mm.equals("")) {
+
+            for (int i = 0; i < 9; i++) {
+                p[i].setDisable(true);
+            }
+
+            if ((mm.equals("X") && flagplayer) || (mm.equals("O") && !flagplayer)) {
+                String winner = "Winner is: " + mm + "owner";
+                score1++;
+                win1.setText(String.valueOf(score1));
+
+                mediaView.setMediaPlayer(mediaPlayer);
+                mediaView.setVisible(true);
+                mediaPlayer.setAutoPlay(true);
+            }
+            else {
+
+                score2++;
+                System.out.println(score2);
+                //   win1.setText(String.valueOf(55));
+                win2.setText(String.valueOf(score2));
+
+                mediaView.setMediaPlayer(mediaPlayer2);
+                mediaView.setVisible(true);
+                mediaPlayer2.setAutoPlay(true);
+
+                // win1.setText(String.valueOf(score1));
+            }
+            mm = "";
+      if(flagrecord)
+      {
+            System.out.println(aa[0][0].equals(aa[0][1]) && aa[0][2].equals(aa[0][1]));
+            Date date = new Date();
+            String dat = date.getTime() + ".txt";
+            System.out.println(dat);
+            File file = new File(dat);
+
+            try {
+                file.createNewFile();
+            } catch (IOException ex) {
+                Logger.getLogger(PlayGame.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+            try {
+                FileOutputStream save = new FileOutputStream(dat);
+                DataOutputStream dos = new DataOutputStream(save);
+                dos.writeUTF(record);
+                dos.close();
+                try {
+                    String pathes = dat + ",";
+                    Files.write(Paths.get("record.txt"), pathes.getBytes(), StandardOpenOption.APPEND);
+                } catch (IOException e) {
+                    System.err.println("file not found");
+                }
+
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(PlayGame.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(PlayGame.class.getName()).log(Level.SEVERE, null, ex);
+            }
+      }
+        }
+    }
+
+    
+    
+      Boolean isMovesLeft(String board[][]) 
+{ 
+	for (int i = 0; i < 3; i++) 
+		for (int j = 0; j < 3; j++) 
+			if (board[i][j] == "") 
+				return true; 
+	return false; 
+}  
+   /**
+    * 
+    * @param y 
+    * passing the value for which action of i wich have an button evvent must happen 
+    * the function call other function like ceckwinner ()
+    * and action handle wich containing the all important parts
+    */
+    
+    public void buttonsevents(int y) {
+        p[y].setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+
+                actionHandle(y);
+                checkWinner();
+                 if(flagpc&&flagpcon)
+                 {
+                 firePC();
+                 flagpc=!flagpc;
+                 }
+                 
             }
         });
-           
+   
+
     }
     
-    public void fire(char board1[][])
+    public void actionHandle (int q)
     {
-        
+         record = record + q+ ",";
+                if (flag == true) {
+
+                    p[q].setText("X");
+                    flag = !flag;
+
+                    p[q].setDisable(true);
+
+                } else {
+                    p[q].setText("O");
+                    flag = !flag;
+                    p[q].setDisable(true);
+                }
+    }
+      public void firePC()
+    {
+        flagpc=!flagpc;
     //    
-       GFG.Move bm = findBestMove(board); 
+         for (int i = 0; i < 3; i++) 
+          {
+              for (int j = 0; j < 3; j++){
+                  if(!aa[i][j].equalsIgnoreCase(""))
+                 bb[i][j]= aa[i][j].toLowerCase().charAt(0);
+              } 
+    }
+         for (int i = 0; i < 3; i++) 
+          {
+              for (int j = 0; j < 3; j++){
+       
+               System.out.println(bb[i][j]) ; 
+              } 
+    }
+       x.o.GFG.Move bm = findBestMove(bb); 
 	if(bm.col==0&&bm.row==0)
         {
-         if(flag==true)
-          {
-           
-                  p[0].setText("X");
-           flag=!flag;
-           
-           p[0].setDisable(true);
-              board[0][0]='x';
-           
-          }else
-          {
-                 p[0].setText("O");
-           flag=!flag;
-           p[0].setDisable(true);
-              board[0][0]='o';
-          }
+            p[0].fire();
         }
             
         if(bm.col==1&&bm.row==0)
         {
-            if(flag==true)
-          {
-           p[1].setText("X");
-           flag=!flag;
-           board[0][1]='x';
-           
-           p[1].setDisable(true);
-          }else
-          {
-                 p[1].setText("O");
-           flag=!flag;
-           p[1].setDisable(true);
-           board[0][1]='o';
-          }
+         
+            p[1].fire();
         }
         if(bm.col==2&&bm.row==0)
         {
-            if(flag==true)
-          {
-           p[2].setText("X");
-           flag=!flag;
-           board[0][2]='x';
-           
-           p[1].setDisable(true);
-          }else
-          {
-                 p[2].setText("O");
-           flag=!flag;
-           p[2].setDisable(true);
-           board[0][2]='o';
-          }
+          
+            p[2].fire();
         }
         if(bm.col==0&&bm.row==1)
         {
-             if(flag==true)
-          {
-           p[3].setText("X");
-           flag=!flag;
-              board[1][0]='x';
-              
-           p[3].setDisable(true);
          
-          }else
-          {
-                 p[3].setText("O");
-           flag=!flag;
-            board[1][0]='o';
-           p[3].setDisable(true);
-          }
+            p[3].fire();
         }
         if(bm.col==1&&bm.row==1)
         {
-            if(flag==true)
-          {
-           p[4].setText("X");
-           flag=!flag;
-            board[1][1]='x';
-           
-           p[4].setDisable(true);
-          }else
-          {
-                 p[4].setText("O");
-           flag=!flag;
-               board[1][1]='o';
-           p[4].setDisable(true);
-          }
+         
+            p[4].fire();
         }
         if(bm.col==2&&bm.row==1)
         {
-            if(flag==true)
-          {
-           p[5].setText("X");
-           flag=!flag;
-               board[1][2]='x';
-           p[5].setDisable(true);
-          }else
-          {
-                 p[5].setText("O");
-           flag=!flag;
-              board[1][2]='o';
-           p[5].setDisable(true);
-          }
+        
+            p[5].fire();
         }
         if(bm.col==0&&bm.row==2)
         {
-       if(flag==true)
-          {
-           p[6].setText("X");
-           flag=!flag;
-              board[2][0]='x';
-           p[6].setDisable(true);
-          }else
-          {
-                 p[6].setText("O");
-           flag=!flag;
-            board[2][0]='o';
-           p[6].setDisable(true);
-          }
+                p[6].fire();
         }
         if(bm.col==1&&bm.row==2)
         {
-            if(flag==true)
-          {
-           p[7].setText("X");
-           flag=!flag;
-                board[2][1]='x';
-           p[7].setDisable(true);
-          }else
-          {
-                 p[7].setText("O");
-           flag=!flag;
-                   board[2][1]='o';
-           p[7].setDisable(true);
-          }
+         
+            
+            p[7].fire();
         }
         if(bm.col==2&&bm.row==2)
         {
-            if(flag==true)
-          {
-           p[8].setText("X");
-           flag=!flag;
-                 board[2][2]='x';
-           p[8].setDisable(true);
-          }else
-          {
-                 p[8].setText("O");
-             
-           flag=!flag;
-                 board[2][2]='o';
-           p[8].setDisable(true);
-          }
+            p[8].fire();
         }
                       
         System.out.printf("ROW: %d COL: %d\n\n", 
 			bm.row, bm.col ); 
     }
 }
-
-class GFG 
+ class GFGo 
 { 
 static class Move 
 { 
@@ -984,6 +942,7 @@ static int minimax(char board[][],
 		} 
 		return best; 
 	} 
+        
 } 
 
 // This will return the best possible 
@@ -1034,17 +993,3 @@ static Move findBestMove(char board[][])
 	return bestMove; 
 }
 }
-
-// Driver code 
-/*public static void main(String[] args) 
-{ 
-	char board[][] = {{ 'x', 'o', 'x' }, 
-					{ 'o', 'x', 'o' }, 
-					{ '_', '_', '_' }}; 
-
-	Move bestMove = findBestMove(board); 
-
-	System.out.printf("The Optimal Move is :\n"); 
-	System.out.printf("ROW: %d COL: %d\n\n", 
-			bestMove.row, bestMove.col ); 
-} */
